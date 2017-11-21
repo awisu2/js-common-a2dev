@@ -28,9 +28,9 @@ var MochaTester = function () {
     }
   }, {
     key: 'isErrorWithDone',
-    value: function isErrorWithDone(err, done) {
+    value: function isErrorWithDone(done, err) {
       if (err) {
-        done(err);
+        this.error(err);
         return true;
       }
       return false;

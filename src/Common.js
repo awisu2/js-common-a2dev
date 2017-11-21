@@ -30,6 +30,54 @@ export default class Common {
     return Object.assign({}, object)
   }
 
+  static matchUrl (str, options = {}) {
+    // urlを一覧で取得(javscript用にエスケープ文字も追加している)
+    const httpRegexp = new RegExp('https?://[\\w/:%#\\$&\\?\\(\\)~\\.=\\+\\-\\\\]+', 'g')
+    let found = str.body.match(httpRegexp)
+
+    if (options.isDeleteEscape) {
+      const escapeRegexp = new RegExp('\\\\', 'g')
+      for (let i in found) {
+        found[i] = found[i].replace(escapeRegexp, '')
+      }
+    }
+    return found
+  }
+
+  static fillObject (obj, sample, options = {}) {
+    let _obj = obj ? this.copyObject(obj) : {}
+    for (let key in sample) {
+      if (_obj[key] === undefined) {
+        _obj[key] = sample[key]
+      } else {
+        if (typeof sample[key] === 'object') {
+          _obj[key] = this.fillObject(_obj[key], sample[key], options)
+        }
+      }
+    }
+
+    if (options.isPrune === true) {
+      _obj = this.pruneObject(_obj, sample, options)
+    }
+
+    return _obj
+  }
+
+  static pruneObject (obj, sample, options = {}) {
+    let _obj = obj ? this.copyObject(obj) : {}
+
+    for (let key in _obj) {
+      if (sample[key] === undefined) {
+        delete _obj[key]
+      } else {
+        if (typeof _obj[key] === 'object' && typeof sample === 'object') {
+          _obj[key] = this.pruneObject(_obj[key], sample[key], options)
+        }
+      }
+    }
+    return _obj
+  }
+
   // ==================================================
   // node
   // ==================================================

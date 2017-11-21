@@ -25,4 +25,104 @@ describe('Common', function () {
         `canNumber ` + JSON.stringify(testValue.value) + ` is ${testValue.canNumber}`)
     }
   })
+
+  it('fillObject', function () {
+    let obj = {
+      a: 1,
+      b: 2,
+      c: {
+        d: 3,
+        e: 4
+      }
+    }
+    let sample = {
+      a: 5,
+      c: {
+        d: 6,
+        f: 7
+      },
+      g: {
+        h: 8
+      }
+    }
+
+    let objFill = Common.fillObject(obj, sample)
+    assert.notDeepEqual(objFill, obj, 'obj changed')
+    assert.deepEqual(objFill, {
+      a: 1,
+      b: 2,
+      c: {
+        d: 3,
+        e: 4,
+        f: 7
+      },
+      g: {
+        h: 8
+      }
+    }, 'missing fill')
+  })
+
+  it('fillObjectWithPrue', function () {
+    let obj = {
+      a: 1,
+      b: 2,
+      c: {
+        d: 3,
+        e: 4
+      }
+    }
+    let sample = {
+      a: 5,
+      c: {
+        d: 6,
+        f: 7
+      },
+      g: {
+        h: 8
+      }
+    }
+
+    let objFill = Common.fillObject(obj, sample, {isPrune: true})
+    assert.notDeepEqual(objFill, obj, 'obj changed')
+    assert.deepEqual(objFill, {
+      a: 1,
+      c: {
+        d: 3,
+        f: 7
+      },
+      g: {
+        h: 8
+      }
+    }, 'missing fill')
+  })
+
+  it('pruneObject', function () {
+    let obj = {
+      a: 1,
+      b: 2,
+      c: {
+        d: 3,
+        e: 4
+      }
+    }
+    let sample = {
+      a: 5,
+      c: {
+        d: 6,
+        f: 7
+      },
+      g: {
+        h: 8
+      }
+    }
+
+    let objPrune = Common.pruneObject(obj, sample)
+    assert.notDeepEqual(objPrune, obj, 'obj changed')
+    assert.deepEqual(objPrune, {
+      a: 1,
+      c: {
+        d: 3
+      }
+    }, 'missing fill')
+  })
 })

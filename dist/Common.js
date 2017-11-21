@@ -53,6 +53,63 @@ var Common = function () {
     value: function copyObject(object) {
       return Object.assign({}, object);
     }
+  }, {
+    key: 'matchUrl',
+    value: function matchUrl(str) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+      // urlを一覧で取得(javscript用にエスケープ文字も追加している)
+      var httpRegexp = new RegExp('https?://[\\w/:%#\\$&\\?\\(\\)~\\.=\\+\\-\\\\]+', 'g');
+      var found = str.body.match(httpRegexp);
+
+      if (options.isDeleteEscape) {
+        var escapeRegexp = new RegExp('\\\\', 'g');
+        for (var i in found) {
+          found[i] = found[i].replace(escapeRegexp, '');
+        }
+      }
+      return found;
+    }
+  }, {
+    key: 'fillObject',
+    value: function fillObject(obj, sample) {
+      var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+      var _obj = obj ? this.copyObject(obj) : {};
+      for (var key in sample) {
+        if (_obj[key] === undefined) {
+          _obj[key] = sample[key];
+        } else {
+          if (_typeof(sample[key]) === 'object') {
+            _obj[key] = this.fillObject(_obj[key], sample[key], options);
+          }
+        }
+      }
+
+      if (options.isPrune === true) {
+        _obj = this.pruneObject(_obj, sample, options);
+      }
+
+      return _obj;
+    }
+  }, {
+    key: 'pruneObject',
+    value: function pruneObject(obj, sample) {
+      var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+      var _obj = obj ? this.copyObject(obj) : {};
+
+      for (var key in _obj) {
+        if (sample[key] === undefined) {
+          delete _obj[key];
+        } else {
+          if (_typeof(_obj[key]) === 'object' && (typeof sample === 'undefined' ? 'undefined' : _typeof(sample)) === 'object') {
+            _obj[key] = this.pruneObject(_obj[key], sample[key], options);
+          }
+        }
+      }
+      return _obj;
+    }
 
     // ==================================================
     // node

@@ -141,9 +141,9 @@ export default class MochaTester {
     return isExists
   }
 
-  static isErrorWithDone (err, done) {
+  static isErrorWithDone (done, err) {
     if (err) {
-      done(err)
+      this.error(err)
       return true
     }
     return false
