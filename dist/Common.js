@@ -60,7 +60,7 @@ var Common = function () {
 
       // urlを一覧で取得(javscript用にエスケープ文字も追加している)
       var httpRegexp = new RegExp('https?://[\\w/:%#\\$&\\?\\(\\)~\\.=\\+\\-\\\\]+', 'g');
-      var found = str.body.match(httpRegexp);
+      var found = str.match(httpRegexp);
 
       if (options.isDeleteEscape) {
         var escapeRegexp = new RegExp('\\\\', 'g');

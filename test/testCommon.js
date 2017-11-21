@@ -2,8 +2,8 @@ const assert = require('assert')
 const Common = require('../dist/Common.js').default
 const Tester = require('../dist/MochaTester').default
 
-describe('Common', function () {
-  it('copyObject', function () {
+describe('Common', () => {
+  it('copyObject', () => {
     let data = {
       a: 1,
       b: 2
@@ -17,7 +17,7 @@ describe('Common', function () {
     assert.notDeepEqual(data, copy, 'update copy object')
   })
 
-  it('canNumber', function () {
+  it('canNumber', () => {
     let testValues = Tester.testValues
     for (let key in testValues) {
       let testValue = testValues[key]
@@ -96,7 +96,7 @@ describe('Common', function () {
     }, 'missing fill')
   })
 
-  it('pruneObject', function () {
+  it('pruneObject', () => {
     let obj = {
       a: 1,
       b: 2,
@@ -125,4 +125,18 @@ describe('Common', function () {
       }
     }, 'missing fill')
   })
+
+  it('matchUrl', () => {
+    const str = 'abdgshttps://a.com dgjka;dgjaggdsjg;djg;dsajgk;ajg;d¥nhttp://\\123.a.sam"sjag;ldjsghsgjkapewojrw97895034u6;l'
+
+    let matches = Common.matchUrl(str)
+    assert.equal(matches[0], 'https://a.com')
+    assert.equal(matches[1], 'http://\\123.a.sam')
+
+    matches = Common.matchUrl(str, {isDeleteEscape: true})
+    assert.equal(matches[0], 'https://a.com')
+    assert.equal(matches[1], 'http://123.a.sam')
+  })
+
+
 })

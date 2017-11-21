@@ -33,7 +33,7 @@ export default class Common {
   static matchUrl (str, options = {}) {
     // urlを一覧で取得(javscript用にエスケープ文字も追加している)
     const httpRegexp = new RegExp('https?://[\\w/:%#\\$&\\?\\(\\)~\\.=\\+\\-\\\\]+', 'g')
-    let found = str.body.match(httpRegexp)
+    let found = str.match(httpRegexp)
 
     if (options.isDeleteEscape) {
       const escapeRegexp = new RegExp('\\\\', 'g')
