@@ -52,7 +52,7 @@ export default class Http {
           case 308: // Permanent Redirect
             if (options.isRedirect === true && url !== res.headers.location) {
               isRedirect = true
-              this.httpRequest(res.headers.location, data, options)
+              this.request(res.headers.location, data, options)
                 .then(data => resolve(data))
                 .catch(err => reject(err))
             } else {

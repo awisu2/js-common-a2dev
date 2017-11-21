@@ -59,7 +59,7 @@ var Common = function () {
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       // urlを一覧で取得(javscript用にエスケープ文字も追加している)
-      var httpRegexp = new RegExp('https?://[\\w/:%#\\$&\\?\\(\\)~\\.=\\+\\-\\\\]+', 'g');
+      var httpRegexp = new RegExp('https?:[\\\\/]+[\\w/:%#\\$&\\?\\(\\)~\\.=\\+\\-\\\\]+', 'g');
       var found = str.match(httpRegexp);
 
       if (options.isDeleteEscape) {

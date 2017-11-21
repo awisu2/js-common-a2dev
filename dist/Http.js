@@ -86,7 +86,7 @@ var Http = function () {
               // Permanent Redirect
               if (options.isRedirect === true && url !== res.headers.location) {
                 isRedirect = true;
-                _this.httpRequest(res.headers.location, data, options).then(function (data) {
+                _this.request(res.headers.location, data, options).then(function (data) {
                   return resolve(data);
                 }).catch(function (err) {
                   return reject(err);
