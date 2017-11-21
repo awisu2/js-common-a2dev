@@ -127,11 +127,11 @@ describe('Common', () => {
   })
 
   it('matchUrl', () => {
-    const str = 'abdgshttps://a.com dgjka;dgjaggdsjg;djg;dsajgk;ajg;d¥nhttp://\\123.a.sam"sjag;ldjsghsgjkapewojrw97895034u6;l'
+    let str = 'abdgshttps://a.com dgjka;dgjaggdsjg;djg;dsajgk;ajg;d¥nhttp:\\/\\/\\123.a.sam"sjag;ldjsghsgjkapewojrw97895034u6;l'
 
     let matches = Common.matchUrl(str)
     assert.equal(matches[0], 'https://a.com')
-    assert.equal(matches[1], 'http://\\123.a.sam')
+    assert.equal(matches[1], 'http:\\/\\/\\123.a.sam')
 
     matches = Common.matchUrl(str, {isDeleteEscape: true})
     assert.equal(matches[0], 'https://a.com')
