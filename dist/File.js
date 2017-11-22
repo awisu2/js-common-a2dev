@@ -142,12 +142,14 @@ var File = function () {
     key: 'renameSyncBySearch',
     value: function renameSyncBySearch(file, pattern, replace) {
       var change = null;
-      var oldPath = file;
-      var newPath = oldPath.replace(pattern, replace);
-      if (oldPath !== newPath) {
-        _fs2.default.renameSync(oldPath, newPath);
+      var dir = _path2.default.dirname(file);
+      var name = _path2.default.basename(file);
+      var newName = name.replace(pattern, replace);
+      if (name !== newName) {
+        var newPath = dir + _path2.default.sep + newName;
+        _fs2.default.renameSync(file, newPath);
         change = {
-          old: oldPath,
+          old: file,
           new: newPath
         };
       }
@@ -172,10 +174,12 @@ var File = function () {
       var numberRegexp = new RegExp('[0-9]+', 'g');
       var changes = [];
       for (var i in files) {
-        var change = File.renameSyncBySearch(files[i], numberRegexp, function (match) {
-          return _Common2.default.fillStr(match, maxLength);
-        });
-        if (change) changes.push(change);
+        if (files[i].indexOf('._') === -1 && files[i].indexOf('.DS_Store') === -1) {
+          var change = File.renameSyncBySearch(files[i], numberRegexp, function (match) {
+            return _Common2.default.fillStr(match, maxLength);
+          });
+          if (change) changes.push(change);
+        }
       }
 
       // logs

@@ -124,12 +124,15 @@ export default class Common {
   }
 
   static fillStr (str, length, fill = '0') {
-    let strLength = str.length
     let fillLength = fill.length
-    if (strLength > length ||
-      fillLength === 0) {
+    if (fillLength === 0) {
       return str
     }
+    let strLength = str.length
+    if (strLength > length) {
+      return str.substr(-length)
+    }
+
     let prefix = fill.repeat(Math.ceil(length / fillLength))
       .substr(0, length - strLength)
     return prefix + str

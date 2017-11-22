@@ -170,11 +170,15 @@ var Common = function () {
     value: function fillStr(str, length) {
       var fill = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '0';
 
-      var strLength = str.length;
       var fillLength = fill.length;
-      if (strLength > length || fillLength === 0) {
+      if (fillLength === 0) {
         return str;
       }
+      var strLength = str.length;
+      if (strLength > length) {
+        return str.substr(-length);
+      }
+
       var prefix = fill.repeat(Math.ceil(length / fillLength)).substr(0, length - strLength);
       return prefix + str;
     }

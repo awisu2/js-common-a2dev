@@ -103,12 +103,14 @@ export default class File {
 
   static renameSyncBySearch (file, pattern, replace) {
     let change = null
-    let oldPath = file
-    let newPath = oldPath.replace(pattern, replace)
-    if (oldPath !== newPath) {
-      fs.renameSync(oldPath, newPath)
+    let dir = path.dirname(file)
+    let name = path.basename(file)
+    let newName = name.replace(pattern, replace)
+    if (name !== newName) {
+      let newPath = dir + path.sep + newName
+      fs.renameSync(file, newPath)
       change = {
-        old: oldPath,
+        old: file,
         new: newPath
       }
     }
@@ -127,10 +129,12 @@ export default class File {
     const numberRegexp = new RegExp('[0-9]+', 'g')
     let changes = []
     for (let i in files) {
-      let change = File.renameSyncBySearch(files[i], numberRegexp, (match) => {
-        return Common.fillStr(match, maxLength)
-      })
-      if (change) changes.push(change)
+      if (files[i].indexOf('._') === -1 && files[i].indexOf('.DS_Store') === -1) {
+        let change = File.renameSyncBySearch(files[i], numberRegexp, (match) => {
+          return Common.fillStr(match, maxLength)
+        })
+        if (change) changes.push(change)
+      }
     }
 
     // logs
