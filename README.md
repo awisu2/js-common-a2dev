@@ -29,6 +29,9 @@ const {Common} = require('common-a2dev')
 - Common.getArgumentCurrent ()
 - Common.getArgumentValue (index)
 - Common.addNodePathEnv (path)
+- Common.getMatches (values, pattern)
+- Common.getMaxLengthStr (strings)
+- Common.fillStr (str, length, fill = '0')
 
 #### Common.existsArg (v)
 check exists function artument
@@ -101,6 +104,7 @@ const {Http} = require('common-a2dev')
 - deepReaddirSync
 - makeFiles
 - checkFiles
+- renameSyncBySearch
 
 #### File.setSeparator(target)
 
@@ -204,6 +208,15 @@ const files = {
   }
 }
 File.checkFiles(filse)
+```
+
+#### File.renameSyncBySearch (file, pattern, replace)
+
+rename file by fs.renameSync  
+before rename check pattern 
+
+```
+
 ```
 
 ## How to Test

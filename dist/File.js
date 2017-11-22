@@ -138,6 +138,21 @@ var File = function () {
       }
       return errors.length > 0 ? errors : null;
     }
+  }, {
+    key: 'renameSyncBySearch',
+    value: function renameSyncBySearch(file, pattern, replace) {
+      var change = null;
+      var oldPath = file;
+      var newPath = oldPath.replace(pattern, replace);
+      if (oldPath !== newPath) {
+        _fs2.default.renameSync(oldPath, newPath);
+        change = {
+          old: oldPath,
+          new: newPath
+        };
+      }
+      return change;
+    }
   }]);
 
   return File;

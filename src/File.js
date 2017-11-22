@@ -100,4 +100,18 @@ export default class File {
     }
     return errors.length > 0 ? errors : null
   }
+
+  static renameSyncBySearch (file, pattern, replace) {
+    let change = null
+    let oldPath = file
+    let newPath = oldPath.replace(pattern, replace)
+    if (oldPath !== newPath) {
+      fs.renameSync(oldPath, newPath)
+      change = {
+        old: oldPath,
+        new: newPath
+      }
+    }
+    return change
+  }
 }

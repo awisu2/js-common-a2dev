@@ -138,5 +138,48 @@ describe('Common', () => {
     assert.equal(matches[1], 'http://123.a.sam')
   })
 
+  it('getMatches', () => {
+    let values = [
+      'ab12cd345efg',
+      'abcd678efg',
+      '90abcdefg12',
+      'abcdefg'
+    ]
 
+    let matches = Common.getMatches(values, new RegExp('[0-9]+'))
+    assert.deepEqual(matches, [
+      '12',
+      '678',
+      '90'
+    ])
+
+    matches = Common.getMatches(values, new RegExp('[0-9]+', 'g'))
+    assert.deepEqual(matches, [
+      '12',
+      '345',
+      '678',
+      '90',
+      '12'
+    ])
+  })
+
+  it('getMaxLengthStr', () => {
+    let strings = [
+      'abc',
+      'defghij',
+      'klmnopq',
+      'rstu',
+      'vwxyz',
+      ''
+    ]
+
+    let length = Common.getMaxLengthStr(strings)
+    assert.equal(length, 7)
+  })
+
+  it('fillStr', () => {
+    let str = 'abc'
+    assert.equal(Common.fillStr(str, 10), '0000000abc')
+    assert.equal(Common.fillStr(str, 10, '1234'), '1234123abc')
+  })
 })

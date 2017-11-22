@@ -102,4 +102,36 @@ export default class Common {
     }
     require('module')._initPaths()
   }
+
+  static getMatches (values, pattern) {
+    let hits = []
+    for (let i in values) {
+      let matches = values[i].match(pattern)
+      if (matches !== null) {
+        matches.forEach(match => hits.push(match))
+      }
+    }
+    return hits || null
+  }
+
+  static getMaxLengthStr (strings) {
+    let maxLength = 0
+    for (let i in strings) {
+      let length = strings[i].length
+      if (length > maxLength) maxLength = length
+    }
+    return maxLength
+  }
+
+  static fillStr (str, length, fill = '0') {
+    let strLength = str.length
+    let fillLength = fill.length
+    if (strLength > length ||
+      fillLength === 0) {
+      return str
+    }
+    let prefix = fill.repeat(Math.ceil(length / fillLength))
+      .substr(0, length - strLength)
+    return prefix + str
+  }
 }

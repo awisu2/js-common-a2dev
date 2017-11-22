@@ -141,6 +141,43 @@ var Common = function () {
       }
       require('module')._initPaths();
     }
+  }, {
+    key: 'getMatches',
+    value: function getMatches(values, pattern) {
+      var hits = [];
+      for (var i in values) {
+        var matches = values[i].match(pattern);
+        if (matches !== null) {
+          matches.forEach(function (match) {
+            return hits.push(match);
+          });
+        }
+      }
+      return hits || null;
+    }
+  }, {
+    key: 'getMaxLengthStr',
+    value: function getMaxLengthStr(strings) {
+      var maxLength = 0;
+      for (var i in strings) {
+        var length = strings[i].length;
+        if (length > maxLength) maxLength = length;
+      }
+      return maxLength;
+    }
+  }, {
+    key: 'fillStr',
+    value: function fillStr(str, length) {
+      var fill = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '0';
+
+      var strLength = str.length;
+      var fillLength = fill.length;
+      if (strLength > length || fillLength === 0) {
+        return str;
+      }
+      var prefix = fill.repeat(Math.ceil(length / fillLength)).substr(0, length - strLength);
+      return prefix + str;
+    }
   }]);
 
   return Common;
