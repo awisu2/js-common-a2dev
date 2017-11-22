@@ -1,10 +1,11 @@
 {
   "name": "common-a2dev",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "npm run build && mocha test",
+    "testOne": "mocha test --grep",
     "build": "babel src -d dist",
     "dev": "npm run build -- -w"
   },
