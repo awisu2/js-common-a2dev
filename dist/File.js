@@ -153,6 +153,34 @@ var File = function () {
       }
       return change;
     }
+  }, {
+    key: 'fillNumbersByMaxlengthUnderDirectory',
+    value: function fillNumbersByMaxlengthUnderDirectory() {
+      var directory = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '.';
+
+      // get file names
+      var _File$deepReaddirSync = File.deepReaddirSync(directory),
+          files = _File$deepReaddirSync.files;
+
+      // get maxLength by number
+
+
+      var hits = _Common2.default.getMatches(files, new RegExp('[1-9][0-9]+', 'g'));
+      var maxLength = _Common2.default.getMaxLengthStr(hits);
+
+      // get maxLength
+      var numberRegexp = new RegExp('[0-9]+', 'g');
+      var changes = [];
+      for (var i in files) {
+        var change = File.renameSyncBySearch(files[i], numberRegexp, function (match) {
+          return _Common2.default.fillStr(match, maxLength);
+        });
+        if (change) changes.push(change);
+      }
+
+      // logs
+      return changes.length === 0 ? null : changes;
+    }
   }]);
 
   return File;

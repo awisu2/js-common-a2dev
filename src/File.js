@@ -114,4 +114,26 @@ export default class File {
     }
     return change
   }
+
+  static fillNumbersByMaxlengthUnderDirectory (directory = '.') {
+    // get file names
+    let {files} = File.deepReaddirSync(directory)
+
+    // get maxLength by number
+    let hits = Common.getMatches(files, new RegExp('[1-9][0-9]+', 'g'))
+    let maxLength = Common.getMaxLengthStr(hits)
+
+    // get maxLength
+    const numberRegexp = new RegExp('[0-9]+', 'g')
+    let changes = []
+    for (let i in files) {
+      let change = File.renameSyncBySearch(files[i], numberRegexp, (match) => {
+        return Common.fillStr(match, maxLength)
+      })
+      if (change) changes.push(change)
+    }
+
+    // logs
+    return changes.length === 0 ? null : changes
+  }
 }

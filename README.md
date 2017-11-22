@@ -105,6 +105,7 @@ const {Http} = require('common-a2dev')
 - makeFiles
 - checkFiles
 - renameSyncBySearch
+- fillNumbersByMaxlengthUnderDirectory (directory = '.')
 
 #### File.setSeparator(target)
 
