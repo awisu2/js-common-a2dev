@@ -50,7 +50,7 @@ export default class Common {
       if (_obj[key] === undefined) {
         _obj[key] = sample[key]
       } else {
-        if (typeof obj[key] === 'object' && typeof sample[key] === 'object') {
+        if (typeof obj[key] === 'object' && obj[key] !== null && typeof sample[key] === 'object') {
           _obj[key] = this.fillObject(_obj[key], sample[key], options)
         }
       }
@@ -70,7 +70,7 @@ export default class Common {
       if (sample[key] === undefined) {
         delete _obj[key]
       } else {
-        if (typeof _obj[key] === 'object' && typeof sample === 'object') {
+        if (typeof _obj[key] === 'object' && _obj[key] !== null && typeof sample === 'object') {
           _obj[key] = this.pruneObject(_obj[key], sample[key], options)
         }
       }

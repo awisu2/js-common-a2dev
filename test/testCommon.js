@@ -33,7 +33,8 @@ describe('Common', () => {
       c: {
         d: 'abc',
         e: 4
-      }
+      },
+      i: null
     }
     let sample = {
       a: 5,
@@ -43,7 +44,8 @@ describe('Common', () => {
       },
       g: {
         h: 8
-      }
+      },
+      i: null
     }
 
     let objFill = Common.fillObject(obj, sample)
@@ -58,7 +60,8 @@ describe('Common', () => {
       },
       g: {
         h: 8
-      }
+      },
+      i: null
     }, 'missing fill')
   })
 

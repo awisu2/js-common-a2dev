@@ -80,7 +80,7 @@ var Common = function () {
         if (_obj[key] === undefined) {
           _obj[key] = sample[key];
         } else {
-          if (_typeof(obj[key]) === 'object' && _typeof(sample[key]) === 'object') {
+          if (_typeof(obj[key]) === 'object' && obj[key] !== null && _typeof(sample[key]) === 'object') {
             _obj[key] = this.fillObject(_obj[key], sample[key], options);
           }
         }
@@ -103,7 +103,7 @@ var Common = function () {
         if (sample[key] === undefined) {
           delete _obj[key];
         } else {
-          if (_typeof(_obj[key]) === 'object' && (typeof sample === 'undefined' ? 'undefined' : _typeof(sample)) === 'object') {
+          if (_typeof(_obj[key]) === 'object' && _obj[key] !== null && (typeof sample === 'undefined' ? 'undefined' : _typeof(sample)) === 'object') {
             _obj[key] = this.pruneObject(_obj[key], sample[key], options);
           }
         }
