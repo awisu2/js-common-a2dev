@@ -2,6 +2,8 @@ import HTTP from 'http'
 import HTTPS from 'https'
 import URL from 'url'
 import Common from './Common'
+import request from 'request'
+import fs from 'fs'
 
 export default class Http {
   static request (url, data = null, options = {}) {
@@ -93,5 +95,18 @@ export default class Http {
       headers: response.headers,
       body: body
     }
+  }
+
+  static downloadFile (url, filename) {
+    return new Promise((resolve, reject) => {
+      request(url)
+        .pipe(fs.createWriteStream(filename))
+        .on('close', () => {
+          resolve()
+        })
+        .on('error', (err) => {
+          reject(err)
+        })
+    })
   }
 }

@@ -22,6 +22,14 @@ var _Common = require('./Common');
 
 var _Common2 = _interopRequireDefault(_Common);
 
+var _request = require('request');
+
+var _request2 = _interopRequireDefault(_request);
+
+var _fs = require('fs');
+
+var _fs2 = _interopRequireDefault(_fs);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -135,6 +143,17 @@ var Http = function () {
         headers: response.headers,
         body: body
       };
+    }
+  }, {
+    key: 'downloadFile',
+    value: function downloadFile(url, filename) {
+      return new Promise(function (resolve, reject) {
+        (0, _request2.default)(url).pipe(_fs2.default.createWriteStream(filename)).on('close', function () {
+          resolve();
+        }).on('error', function (err) {
+          reject(err);
+        });
+      });
     }
   }]);
 
