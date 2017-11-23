@@ -110,6 +110,11 @@ var Common = function () {
       }
       return _obj;
     }
+  }, {
+    key: 'randomInt',
+    value: function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 
     // ==================================================
     // node

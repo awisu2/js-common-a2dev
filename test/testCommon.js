@@ -185,4 +185,24 @@ describe('Common', () => {
     assert.equal(Common.fillStr(str, 10), '0000000abc')
     assert.equal(Common.fillStr(str, 10, '1234'), '1234123abc')
   })
+
+  it('randomInt', () => {
+    const min = 33
+    const max = 1932
+    let isOk = true
+    let isMin = false
+    let isMax = false
+    for (let i = 0; i < 100000; i++) {
+      let rand = Common.randomInt(min, max)
+      if (rand < min && rand > max) {
+        isOk = false
+        break
+      }
+      if (rand === max) isMin = true
+      if (rand === max) isMax = true
+    }
+    assert.ok(isOk, 'out of range')
+    assert.ok(isMin, 'no get min')
+    assert.ok(isMax, 'no get max')
+  })
 })

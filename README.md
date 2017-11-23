@@ -32,6 +32,7 @@ const {Common} = require('common-a2dev')
 - Common.getMatches (values, pattern)
 - Common.getMaxLengthStr (strings)
 - Common.fillStr (str, length, fill = '0')
+- Common.randomInt(min, max)
 
 #### Common.existsArg (v)
 check exists function artument

@@ -1,6 +1,6 @@
 {
   "name": "common-a2dev",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -24,5 +24,8 @@
     "babel-preset-env": "^1.6.1",
     "fs-extra": "^4.0.2",
     "mocha": "^4.0.1"
+  },
+  "dependencies": {
+    "request": "^2.83.0"
   }
 }
