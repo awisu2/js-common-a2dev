@@ -50,7 +50,7 @@ export default class Common {
       if (_obj[key] === undefined) {
         _obj[key] = sample[key]
       } else {
-        if (typeof sample[key] === 'object') {
+        if (typeof obj[key] === 'object' && typeof sample[key] === 'object') {
           _obj[key] = this.fillObject(_obj[key], sample[key], options)
         }
       }

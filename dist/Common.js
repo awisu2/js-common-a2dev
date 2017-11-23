@@ -80,7 +80,7 @@ var Common = function () {
         if (_obj[key] === undefined) {
           _obj[key] = sample[key];
         } else {
-          if (_typeof(sample[key]) === 'object') {
+          if (_typeof(obj[key]) === 'object' && _typeof(sample[key]) === 'object') {
             _obj[key] = this.fillObject(_obj[key], sample[key], options);
           }
         }

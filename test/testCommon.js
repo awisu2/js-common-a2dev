@@ -31,14 +31,14 @@ describe('Common', () => {
       a: 1,
       b: 2,
       c: {
-        d: 3,
+        d: 'abc',
         e: 4
       }
     }
     let sample = {
       a: 5,
       c: {
-        d: 6,
+        d: null,
         f: 7
       },
       g: {
@@ -52,7 +52,7 @@ describe('Common', () => {
       a: 1,
       b: 2,
       c: {
-        d: 3,
+        d: 'abc',
         e: 4,
         f: 7
       },
@@ -65,7 +65,7 @@ describe('Common', () => {
   it('fillObjectWithPrue', function () {
     let obj = {
       a: 1,
-      b: 2,
+      b: 'abc',
       c: {
         d: 3,
         e: 4
@@ -108,7 +108,7 @@ describe('Common', () => {
     let sample = {
       a: 5,
       c: {
-        d: 6,
+        d: 'abc',
         f: 7
       },
       g: {
