@@ -106,6 +106,35 @@ describe('File', () => {
         '.testDirectory/b/d'
       ]
     }, 'not correct get with ignoreSystemFile')
+
+    // relative
+    reads = File.deepReaddirSync(TEST_DIR, {isRelative: true})
+    assert.deepEqual(reads, {
+      files: [
+        'b/e',
+        'b/h._123',
+        'f'
+      ],
+      directories: [
+        'a',
+        'b',
+        'b/c',
+        'b/d'
+      ]
+    }, 'not correct get with isReative')
+
+    // with systemfile
+    reads = File.deepReaddirSync(TEST_DIR, {maxDeep: 0})
+    assert.deepEqual(reads, {
+      files: [
+        '.testDirectory/f'
+      ],
+      directories: [
+        '.testDirectory/a',
+        '.testDirectory/b',
+      ]
+    }, 'not correct get with isReative')
+
     removeTestDir(FILES)
   })
 })

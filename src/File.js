@@ -16,13 +16,15 @@ export default class File {
   }
 
   // 再帰的にファイル読み込み
-  static deepReaddirSync (target, options = {}) {
+  static deepReaddirSync (base, options = {}) {
     options = Common.fillObject(options, {
       maxDeep: 5,
-      deep: 0,
-      ignoreSystemFile: true
+      ignoreSystemFile: true,
+      isRelative: false,
+      _deep: 0,
+      _relative: ''
     })
-    let {maxDeep, deep, ignoreSystemFile} = options
+    let {maxDeep, ignoreSystemFile, isRelative, _deep, _relative} = options
 
     let reads = {
       files: [],
@@ -30,31 +32,38 @@ export default class File {
     }
 
     // check max deep
-    if (deep >= maxDeep) {
-      return reads
-    }
+    if (_deep > maxDeep) return reads
 
     // add file separator
-    target = this.setSeparator(target)
+    let target = this.setSeparator(base) + _relative
 
     // read files
     let files = fs.readdirSync(target)
     for (let i in files) {
-      let targetFull = target + files[i]
+      let targetFull = this.setSeparator(target) + files[i]
+      let setPath = ''
+      if (isRelative) {
+        if (_relative) setPath = this.setSeparator(_relative)
+        setPath += files[i]
+      } else {
+        setPath = targetFull
+      }
+
       let stat = fs.statSync(targetFull)
       if (stat.isFile()) {
-        let isSystemfile = false
-        if (ignoreSystemFile) {
-          isSystemfile = this.isSystemfile(files[i])
-        }
-        if (!isSystemfile) {
-          reads.files.push(targetFull)
+        if (!ignoreSystemFile || !this.isSystemfile(files[i])) {
+          reads.files.push(setPath)
         }
       } else if (stat.isDirectory()) {
-        reads.directories.push(targetFull)
-        ++options.deep
-        let _reads = this.deepReaddirSync(targetFull, options)
-        --options.deep
+        reads.directories.push(setPath)
+
+        // create next read option
+        let _options = Common.copyObject(options)
+        if (_options._relative) _options._relative = this.setSeparator(_options._relative)
+        _options._relative += files[i]
+        _options._deep++
+        let _reads = this.deepReaddirSync(base, _options)
+
         reads.files = reads.files.concat(_reads.files)
         reads.directories = reads.directories.concat(_reads.directories)
       }

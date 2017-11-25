@@ -42,18 +42,22 @@ var File = function () {
 
   }, {
     key: 'deepReaddirSync',
-    value: function deepReaddirSync(target) {
+    value: function deepReaddirSync(base) {
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       options = _Common2.default.fillObject(options, {
         maxDeep: 5,
-        deep: 0,
-        ignoreSystemFile: true
+        ignoreSystemFile: true,
+        isRelative: false,
+        _deep: 0,
+        _relative: ''
       });
-      var _options = options,
-          maxDeep = _options.maxDeep,
-          deep = _options.deep,
-          ignoreSystemFile = _options.ignoreSystemFile;
+      var _options2 = options,
+          maxDeep = _options2.maxDeep,
+          ignoreSystemFile = _options2.ignoreSystemFile,
+          isRelative = _options2.isRelative,
+          _deep = _options2._deep,
+          _relative = _options2._relative;
 
 
       var reads = {
@@ -61,31 +65,38 @@ var File = function () {
         directories: []
 
         // check max deep
-      };if (deep >= maxDeep) {
-        return reads;
-      }
+      };if (_deep > maxDeep) return reads;
 
       // add file separator
-      target = this.setSeparator(target);
+      var target = this.setSeparator(base) + _relative;
 
       // read files
       var files = _fs2.default.readdirSync(target);
       for (var i in files) {
-        var targetFull = target + files[i];
+        var targetFull = this.setSeparator(target) + files[i];
+        var setPath = '';
+        if (isRelative) {
+          if (_relative) setPath = this.setSeparator(_relative);
+          setPath += files[i];
+        } else {
+          setPath = targetFull;
+        }
+
         var stat = _fs2.default.statSync(targetFull);
         if (stat.isFile()) {
-          var isSystemfile = false;
-          if (ignoreSystemFile) {
-            isSystemfile = this.isSystemfile(files[i]);
-          }
-          if (!isSystemfile) {
-            reads.files.push(targetFull);
+          if (!ignoreSystemFile || !this.isSystemfile(files[i])) {
+            reads.files.push(setPath);
           }
         } else if (stat.isDirectory()) {
-          reads.directories.push(targetFull);
-          ++options.deep;
-          var _reads = this.deepReaddirSync(targetFull, options);
-          --options.deep;
+          reads.directories.push(setPath);
+
+          // create next read option
+          var _options = _Common2.default.copyObject(options);
+          if (_options._relative) _options._relative = this.setSeparator(_options._relative);
+          _options._relative += files[i];
+          _options._deep++;
+          var _reads = this.deepReaddirSync(base, _options);
+
           reads.files = reads.files.concat(_reads.files);
           reads.directories = reads.directories.concat(_reads.directories);
         }
