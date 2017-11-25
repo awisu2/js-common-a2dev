@@ -97,9 +97,9 @@ export default class Http {
     }
   }
 
-  static downloadFile (url, filename) {
+  static downloadFile (url, filename, options = {}) {
     return new Promise((resolve, reject) => {
-      request(url)
+      request(url, options)
         .pipe(fs.createWriteStream(filename))
         .on('close', () => {
           resolve()

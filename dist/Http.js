@@ -147,8 +147,10 @@ var Http = function () {
   }, {
     key: 'downloadFile',
     value: function downloadFile(url, filename) {
+      var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
       return new Promise(function (resolve, reject) {
-        (0, _request2.default)(url).pipe(_fs2.default.createWriteStream(filename)).on('close', function () {
+        (0, _request2.default)(url, options).pipe(_fs2.default.createWriteStream(filename)).on('close', function () {
           resolve();
         }).on('error', function (err) {
           reject(err);
