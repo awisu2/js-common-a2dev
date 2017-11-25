@@ -24,6 +24,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var SYSTEMFILE = ['._', '.DS_Store'];
+
 var File = function () {
   function File() {
     _classCallCheck(this, File);
@@ -45,15 +47,21 @@ var File = function () {
 
       options = _Common2.default.fillObject(options, {
         maxDeep: 5,
-        deep: 0
+        deep: 0,
+        ignoreSystemFile: true
       });
+      var _options = options,
+          maxDeep = _options.maxDeep,
+          deep = _options.deep,
+          ignoreSystemFile = _options.ignoreSystemFile;
+
 
       var reads = {
         files: [],
         directories: []
 
         // check max deep
-      };if (options.deep >= options.maxDeep) {
+      };if (deep >= maxDeep) {
         return reads;
       }
 
@@ -66,7 +74,13 @@ var File = function () {
         var targetFull = target + files[i];
         var stat = _fs2.default.statSync(targetFull);
         if (stat.isFile()) {
-          reads.files.push(targetFull);
+          var isSystemfile = false;
+          if (ignoreSystemFile) {
+            isSystemfile = this.isSystemfile(files[i]);
+          }
+          if (!isSystemfile) {
+            reads.files.push(targetFull);
+          }
         } else if (stat.isDirectory()) {
           reads.directories.push(targetFull);
           ++options.deep;
@@ -90,13 +104,13 @@ var File = function () {
 
         // create
         var data = filse[i];
-        if ((typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object') {
+        if ((typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object' && data !== null) {
           _fs2.default.mkdirSync(target);
           if (Object.keys(data).length > 0) {
             this.makeFiles(data, target);
           }
         } else {
-          _fs2.default.writeFileSync(target, data);
+          _fs2.default.writeFileSync(target, data || '');
         }
       }
     }
@@ -112,7 +126,7 @@ var File = function () {
         var file = current + i;
         if (_fs2.default.existsSync(file)) {
           var stat = _fs2.default.statSync(file);
-          if (_typeof(files[i]) === 'object') {
+          if (_typeof(files[i]) === 'object' && files[i] !== null) {
             if (stat.isDirectory()) {
               var _errors = this.checkFiles(files[i], file);
               if (_errors) errors = errors.concat(_errors);
@@ -184,6 +198,23 @@ var File = function () {
 
       // logs
       return changes.length === 0 ? null : changes;
+    }
+  }, {
+    key: 'isSystemfile',
+    value: function isSystemfile(filename) {
+      var isSystemfile = false;
+      for (var i in SYSTEMFILE) {
+        if (filename.indexOf(SYSTEMFILE[i]) === 0) {
+          isSystemfile = true;
+          break;
+        }
+      }
+      return isSystemfile;
+    }
+  }, {
+    key: 'SYSTEMFILE',
+    get: function get() {
+      return SYSTEMFILE;
     }
   }]);
 

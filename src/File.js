@@ -2,7 +2,14 @@ import fs from 'fs'
 import path from 'path'
 import Common from './Common'
 
+const SYSTEMFILE = [
+  '._',
+  '.DS_Store'
+]
+
 export default class File {
+  static get SYSTEMFILE () { return SYSTEMFILE }
+
   static setSeparator (target) {
     if (target.slice(-1) !== path.sep) target += path.sep
     return target
@@ -12,8 +19,10 @@ export default class File {
   static deepReaddirSync (target, options = {}) {
     options = Common.fillObject(options, {
       maxDeep: 5,
-      deep: 0
+      deep: 0,
+      ignoreSystemFile: true
     })
+    let {maxDeep, deep, ignoreSystemFile} = options
 
     let reads = {
       files: [],
@@ -21,7 +30,7 @@ export default class File {
     }
 
     // check max deep
-    if (options.deep >= options.maxDeep) {
+    if (deep >= maxDeep) {
       return reads
     }
 
@@ -34,7 +43,13 @@ export default class File {
       let targetFull = target + files[i]
       let stat = fs.statSync(targetFull)
       if (stat.isFile()) {
-        reads.files.push(targetFull)
+        let isSystemfile = false
+        if (ignoreSystemFile) {
+          isSystemfile = this.isSystemfile(files[i])
+        }
+        if (!isSystemfile) {
+          reads.files.push(targetFull)
+        }
       } else if (stat.isDirectory()) {
         reads.directories.push(targetFull)
         ++options.deep
@@ -55,13 +70,13 @@ export default class File {
 
       // create
       let data = filse[i]
-      if (typeof data === 'object') {
+      if (typeof data === 'object' && data !== null) {
         fs.mkdirSync(target)
         if (Object.keys(data).length > 0) {
           this.makeFiles(data, target)
         }
       } else {
-        fs.writeFileSync(target, data)
+        fs.writeFileSync(target, data || '')
       }
     }
   }
@@ -74,7 +89,7 @@ export default class File {
       let file = current + i
       if (fs.existsSync(file)) {
         let stat = fs.statSync(file)
-        if (typeof files[i] === 'object') {
+        if (typeof files[i] === 'object' && files[i] !== null) {
           if (stat.isDirectory()) {
             let _errors = this.checkFiles(files[i], file)
             if (_errors) errors = errors.concat(_errors)
@@ -139,5 +154,16 @@ export default class File {
 
     // logs
     return changes.length === 0 ? null : changes
+  }
+
+  static isSystemfile (filename) {
+    let isSystemfile = false
+    for (let i in SYSTEMFILE) {
+      if (filename.indexOf(SYSTEMFILE[i]) === 0) {
+        isSystemfile = true
+        break
+      }
+    }
+    return isSystemfile
   }
 }

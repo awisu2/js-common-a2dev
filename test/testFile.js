@@ -11,7 +11,10 @@ const FILES = {
     b: {
       c: {},
       d: {},
-      e: 'foo'
+      e: 'foo',
+      '._g': null,
+      'h._123': null,
+      '.DS_Store': null
     },
     f: 'bar'
   }
@@ -49,13 +52,20 @@ describe('File', () => {
     assert.equal(target, TEST_DIR + path.sep)
   })
 
+  it('isSystemfile', () => {
+    assert.ok(File.isSystemfile('._123'))
+    assert.ok(File.isSystemfile('.DS_Store'))
+    assert.ok(!File.isSystemfile('__.DS_Store'))
+    assert.ok(!File.isSystemfile('__._345'))
+  })
+
   it('makeFilesCheckFiles', () => {
     removeTestDir(FILES)
 
     File.makeFiles(FILES)
 
     let errors = File.checkFiles(FILES)
-    assert.equal(errors, null, 'error')
+    assert.equal(errors, null, 'check misssing' + errors)
 
     errors = File.checkFiles(FILES_DIFFERENT)
     assert.notEqual(errors, null, 'has errors')
@@ -68,6 +78,7 @@ describe('File', () => {
     assert.deepEqual(reads, {
       files: [
         '.testDirectory/b/e',
+        '.testDirectory/b/h._123',
         '.testDirectory/f'
       ],
       directories: [
@@ -77,6 +88,24 @@ describe('File', () => {
         '.testDirectory/b/d'
       ]
     }, 'not correct get')
+
+    // with systemfile
+    reads = File.deepReaddirSync(TEST_DIR, {ignoreSystemFile: false})
+    assert.deepEqual(reads, {
+      files: [
+        '.testDirectory/b/.DS_Store',
+        '.testDirectory/b/._g',
+        '.testDirectory/b/e',
+        '.testDirectory/b/h._123',
+        '.testDirectory/f'
+      ],
+      directories: [
+        '.testDirectory/a',
+        '.testDirectory/b',
+        '.testDirectory/b/c',
+        '.testDirectory/b/d'
+      ]
+    }, 'not correct get with ignoreSystemFile')
     removeTestDir(FILES)
   })
 })
