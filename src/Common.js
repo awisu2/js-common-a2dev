@@ -1,4 +1,18 @@
 export default class Common {
+  static get TYPE_STRING () {
+    return {
+      UNDEFINED: '[object Undefined]',
+      NULL: '[object Null]',
+      BOOLEAN: '[object Boolean]',
+      NUMBER: '[object Number]',
+      STRING: '[object String]',
+      SYMBOL: '[object Symbol]',
+      OBJECT: '[object Object]',
+      ARRAY: '[object Array]',
+      FUNCTION: '[object Function]'
+    }
+  }
+
   static existsArg (v) {
     return v === undefined
   }
@@ -50,7 +64,7 @@ export default class Common {
       if (_obj[key] === undefined) {
         _obj[key] = sample[key]
       } else {
-        if (typeof obj[key] === 'object' && obj[key] !== null && typeof sample[key] === 'object') {
+        if (this.isObjectArray(_obj[key])) {
           _obj[key] = this.fillObject(_obj[key], sample[key], options)
         }
       }
@@ -70,7 +84,7 @@ export default class Common {
       if (sample[key] === undefined) {
         delete _obj[key]
       } else {
-        if (typeof _obj[key] === 'object' && _obj[key] !== null && typeof sample === 'object') {
+        if (this.isObjectArray(_obj[key])) {
           _obj[key] = this.pruneObject(_obj[key], sample[key], options)
         }
       }
@@ -80,6 +94,22 @@ export default class Common {
 
   static randomInt (min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min
+  }
+
+  static typeString (v) {
+    return Object.prototype.toString.call(v)
+  }
+
+  static isObject (v) {
+    return this.typeString(v) === this.TYPE_STRING.OBJECT
+  }
+
+  static isArray (v) {
+    return this.typeString(v) === this.TYPE_STRING.ARRAY
+  }
+
+  static isObjectArray (v) {
+    return typeof v === 'object' && v !== null
   }
 
   // ==================================================

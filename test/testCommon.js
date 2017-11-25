@@ -1,5 +1,5 @@
 const assert = require('assert')
-const Common = require('../dist/Common.js').default
+const Common = require('../dist/Common').default
 const Tester = require('../dist/MochaTester').default
 
 describe('Common', () => {
@@ -204,5 +204,49 @@ describe('Common', () => {
     assert.ok(isOk, 'out of range')
     assert.ok(isMin, 'no get min')
     assert.ok(isMax, 'no get max')
+  })
+
+  it('typeString', () => {
+    let values = Tester.testValues
+    for (let i in values) {
+      assert.equal(
+        Common.typeString(values[i].value),
+        values[i].typeString,
+        'not equal ' + i
+      )
+    }
+  })
+
+  it('isObject', () => {
+    let values = Tester.testValues
+    for (let i in values) {
+      assert.equal(
+        Common.isObject(values[i].value),
+        values[i].typeString === Common.TYPE_STRING.OBJECT,
+        'check missing ' + i
+      )
+    }
+  })
+
+  it('isArray', () => {
+    let values = Tester.testValues
+    for (let i in values) {
+      assert.equal(
+        Common.isArray(values[i].value),
+        values[i].typeString === Common.TYPE_STRING.ARRAY,
+        'check missing ' + i
+      )
+    }
+  })
+
+  it('isObjectArray', () => {
+    let values = Tester.testValues
+    for (let i in values) {
+      assert.equal(
+        Common.isObjectArray(values[i].value),
+        Common.isObject(values[i].value) || Common.isArray(values[i].value),
+        'check missing ' + i
+      )
+    }
   })
 })

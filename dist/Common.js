@@ -80,7 +80,7 @@ var Common = function () {
         if (_obj[key] === undefined) {
           _obj[key] = sample[key];
         } else {
-          if (_typeof(obj[key]) === 'object' && obj[key] !== null && _typeof(sample[key]) === 'object') {
+          if (this.isObjectArray(_obj[key])) {
             _obj[key] = this.fillObject(_obj[key], sample[key], options);
           }
         }
@@ -103,7 +103,7 @@ var Common = function () {
         if (sample[key] === undefined) {
           delete _obj[key];
         } else {
-          if (_typeof(_obj[key]) === 'object' && _obj[key] !== null && (typeof sample === 'undefined' ? 'undefined' : _typeof(sample)) === 'object') {
+          if (this.isObjectArray(_obj[key])) {
             _obj[key] = this.pruneObject(_obj[key], sample[key], options);
           }
         }
@@ -114,6 +114,26 @@ var Common = function () {
     key: 'randomInt',
     value: function randomInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+  }, {
+    key: 'typeString',
+    value: function typeString(v) {
+      return Object.prototype.toString.call(v);
+    }
+  }, {
+    key: 'isObject',
+    value: function isObject(v) {
+      return this.typeString(v) === this.TYPE_STRING.OBJECT;
+    }
+  }, {
+    key: 'isArray',
+    value: function isArray(v) {
+      return this.typeString(v) === this.TYPE_STRING.ARRAY;
+    }
+  }, {
+    key: 'isObjectArray',
+    value: function isObjectArray(v) {
+      return (typeof v === 'undefined' ? 'undefined' : _typeof(v)) === 'object' && v !== null;
     }
 
     // ==================================================
@@ -186,6 +206,21 @@ var Common = function () {
 
       var prefix = fill.repeat(Math.ceil(length / fillLength)).substr(0, length - strLength);
       return prefix + str;
+    }
+  }, {
+    key: 'TYPE_STRING',
+    get: function get() {
+      return {
+        UNDEFINED: '[object Undefined]',
+        NULL: '[object Null]',
+        BOOLEAN: '[object Boolean]',
+        NUMBER: '[object Number]',
+        STRING: '[object String]',
+        SYMBOL: '[object Symbol]',
+        OBJECT: '[object Object]',
+        ARRAY: '[object Array]',
+        FUNCTION: '[object Function]'
+      };
     }
   }]);
 
