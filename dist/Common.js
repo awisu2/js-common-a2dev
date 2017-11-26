@@ -208,6 +208,26 @@ var Common = function () {
       return prefix + str;
     }
   }, {
+    key: 'betweenStr',
+    value: function betweenStr(str, prefix, suffix) {
+      var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+
+      options = Common.fillObject(options, {
+        default: '',
+        isHead: false
+      });
+      var betweeen = options.default;
+      var index = str.indexOf(prefix);
+      if (index !== -1 && (!options.isHead || index === 0)) {
+        var indexSuffix = str.indexOf(suffix, index + 1);
+        if (indexSuffix !== -1) {
+          var prefixLength = index + prefix.length;
+          betweeen = str.substr(prefixLength, indexSuffix - prefixLength);
+        }
+      }
+      return betweeen;
+    }
+  }, {
     key: 'TYPE_STRING',
     get: function get() {
       return {

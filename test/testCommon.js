@@ -249,4 +249,16 @@ describe('Common', () => {
       )
     }
   })
+
+  it('betweenStr', () => {
+    let str = 'zzzabc123def'
+    assert.equal(Common.betweenStr(str, 'abc', 'def'), '123', 'check missing ' + str)
+    assert.equal(Common.betweenStr(str, 'abc', 'def', {
+      default: 'yyy',
+      isHead: true
+    }), 'yyy', 'error isHead default')
+    assert.equal(Common.betweenStr(str, 'zzz', '123', {
+      isHead: true
+    }), 'abc', 'no get isHead')
+  })
 })

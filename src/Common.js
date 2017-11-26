@@ -171,4 +171,22 @@ export default class Common {
       .substr(0, length - strLength)
     return prefix + str
   }
+
+  static betweenStr (str, prefix, suffix, options = {}) {
+    options = Common.fillObject(options, {
+      default: '',
+      isHead: false
+    })
+    let betweeen = options.default
+    let index = str.indexOf(prefix)
+    if (index !== -1 && (!options.isHead || index === 0)) {
+      let indexSuffix = str.indexOf(suffix, index + 1)
+      if (indexSuffix !== -1) {
+        let prefixLength = index + prefix.length
+        betweeen = str.substr(prefixLength, indexSuffix - prefixLength)
+      }
+    }
+    return betweeen
+  }
+
 }

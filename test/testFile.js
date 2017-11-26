@@ -131,7 +131,7 @@ describe('File', () => {
       ],
       directories: [
         '.testDirectory/a',
-        '.testDirectory/b',
+        '.testDirectory/b'
       ]
     }, 'not correct get with isReative')
 
