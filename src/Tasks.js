@@ -27,6 +27,7 @@ export default class Tasks {
     this._suffix = options.suffix
     this._status = options.status
     this._list = []
+    if (this._file && fs.existsSync(this._file)) this.parse()
   }
 
   parse () {
@@ -39,7 +40,7 @@ export default class Tasks {
     return this._list
   }
 
-  parseTexts (text) {
+  parseText (text) {
     let lines = text.split('\n')
 
     let tasks = []
@@ -86,7 +87,7 @@ export default class Tasks {
   }
 
   addTaskByText (text) {
-    let tasks = this.parseTexts(text)
+    let tasks = this.parseText(text)
     for (let i in tasks) {
       this.addTask(tasks[i])
     }
@@ -109,5 +110,9 @@ export default class Tasks {
 
   getTask (index) {
     return this._list[index]
+  }
+
+  write () {
+    fs.writeFileSync(this._file, this.toText)
   }
 }

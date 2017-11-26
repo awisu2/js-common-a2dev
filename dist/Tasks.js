@@ -47,6 +47,7 @@ var Tasks = function () {
     this._suffix = options.suffix;
     this._status = options.status;
     this._list = [];
+    if (this._file && fs.existsSync(this._file)) this.parse();
   }
 
   _createClass(Tasks, [{
@@ -61,8 +62,8 @@ var Tasks = function () {
       return this._list;
     }
   }, {
-    key: 'parseTexts',
-    value: function parseTexts(text) {
+    key: 'parseText',
+    value: function parseText(text) {
       var lines = text.split('\n');
 
       var tasks = [];
@@ -106,7 +107,7 @@ var Tasks = function () {
   }, {
     key: 'addTaskByText',
     value: function addTaskByText(text) {
-      var tasks = this.parseTexts(text);
+      var tasks = this.parseText(text);
       for (var i in tasks) {
         this.addTask(tasks[i]);
       }
@@ -132,6 +133,11 @@ var Tasks = function () {
     key: 'getTask',
     value: function getTask(index) {
       return this._list[index];
+    }
+  }, {
+    key: 'write',
+    value: function write() {
+      fs.writeFileSync(this._file, this.toText);
     }
   }, {
     key: 'toText',

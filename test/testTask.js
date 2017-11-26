@@ -1,6 +1,7 @@
 const assert = require('assert')
 const Tasks = require('../dist/Tasks').default
 const TEXT = '[o]a\n[o]b\nc\nd\ne'
+const TEST_FILE = './sample.txt'
 
 describe('Task', () => {
   it('addTask', () => {
@@ -11,9 +12,9 @@ describe('Task', () => {
     ])
   })
 
-  it('parseTexts', () => {
+  it('parseText', () => {
     let tasks = new Tasks()
-    let _tasks = tasks.parseTexts(TEXT)
+    let _tasks = tasks.parseText(TEXT)
     assert.deepEqual(_tasks, [
       { status: 'o', text: 'a' },
       { status: 'o', text: 'b' },
@@ -59,5 +60,11 @@ describe('Task', () => {
     let tasks = new Tasks()
     tasks.addTaskByText(TEXT)
     assert.equal(tasks.toText, '[o]a\n[o]b\n[-]c\n[-]d\n[-]e\n')
+  })
+
+  it('write', () => {
+    let tasks = new Tasks(TEST_FILE)
+    tasks.addTaskByText(TEXT)
+    tasks.write()
   })
 })
