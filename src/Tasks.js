@@ -2,42 +2,93 @@ const Common = require('./Common').default
 const fs = require('fs')
 
 const STATUS = {
-  START: '-',
+  START: 's',
+  ERROR: 'e',
   END: 'o'
 }
 
-export default class Tasks {
-  get status () { return this._status }
+const STATUS_SEPARATOR = {
+  BEFORE: '[',
+  AFTER: ']'
+}
 
-  get list () {
-    return this._list
+class TaskStatus {
+  get status () { return this._status }
+  get length () { return this.toString().length }
+  get isEnd () { return this._status === STATUS.END }
+  get isError () { return this._status === STATUS.ERROR }
+
+  constructor (status = STATUS.START) {
+    if (status === undefined || status === null) status = STATUS.START
+    this._status = status
   }
 
-  constructor (file, options = {}) {
-    options = Common.fillObject(options, {
-      prefix: '[',
-      suffix: ']',
-      status: {
-        start: STATUS.START,
-        end: STATUS.END
-      }
+  toString () {
+    return STATUS_SEPARATOR.BEFORE + this._status + STATUS_SEPARATOR.AFTER
+  }
+
+  end () {
+    this._status = STATUS.END
+  }
+
+  error () {
+    this._status = STATUS.ERROR
+  }
+
+  update (status) {
+    this._status = status
+  }
+}
+
+class Task {
+  get status () { return this._status }
+  get text () { return this._text }
+
+  static createByString (str) {
+    let statusStr = Common.betweenStr(str, STATUS_SEPARATOR.BEFORE, STATUS_SEPARATOR.AFTER, {
+      isHead: true,
+      default: null
     })
+
+    let status = new TaskStatus(statusStr)
+    let text = str.substr(statusStr ? status.length : 0).trim()
+    return new Task(text, status)
+  }
+
+  constructor (text, status) {
+    if (typeof status === 'object') {
+      this._status = status
+    } else {
+      this._status = new TaskStatus(status)
+    }
+    this._text = text
+  }
+
+  toString () {
+    return this._status.toString() + this._text
+  }
+}
+
+class Tasks {
+  get tasks () {
+    return this._tasks
+  }
+
+  constructor (file) {
     this._file = file
-    this._prefix = options.prefix
-    this._suffix = options.suffix
-    this._status = options.status
-    this._list = []
-    if (this._file && fs.existsSync(this._file)) this.parse()
+    this._tasks = []
+    if (this._file && fs.existsSync(this._file)) {
+      this._tasks = this.parse()
+    }
   }
 
   parse () {
-    let list = []
+    let tasks = []
     if (fs.existsSync(this._file)) {
       let data = fs.readFileSync(this._file)
-      list = this.parseText(data.toString())
+      tasks = this.parseText(data.toString())
     }
-    this._list = list
-    return this._list
+    return tasks
   }
 
   parseText (text) {
@@ -45,45 +96,22 @@ export default class Tasks {
 
     let tasks = []
     for (let i in lines) {
-      let line = lines[i]
-      if (!line) continue
-
-      let task = this.parseLine(line)
-      if (task) tasks.push(task)
+      if (!lines[i]) continue
+      tasks.push(Task.createByString(lines[i]))
     }
-
     return tasks
   }
 
-  get toText () {
-    let text = ''
-    for (let i in this._list) {
-      let task = this._list[i]
-      text += this._prefix + task.status +
-       this._suffix + task.text + '\n'
+  get toString () {
+    let str = ''
+    for (let i in this._tasks) {
+      str += this._tasks[i].toString() + '\n'
     }
-    return text
-  }
-
-  parseLine (line) {
-    let status = Common.betweenStr(line, this._prefix, this._suffix, {
-      isHead: true, default: this.status.start
-    })
-
-    let statusStr = this._prefix + status + this._suffix
-    let i = line.indexOf(statusStr) === 0 ? statusStr.length : 0
-    return this.createTask(status, line.substr(i))
-  }
-
-  createTask (status = this.status.start, text = '') {
-    return {
-      status: status,
-      text: text
-    }
+    return str
   }
 
   addTask (task) {
-    this._list.push(task)
+    this._tasks.push(task)
   }
 
   addTaskByText (text) {
@@ -93,26 +121,25 @@ export default class Tasks {
     }
   }
 
-  updateStatus (i, status) {
-    this._list[i].status = status
-  }
-
   indexOfExists () {
-    let index = -1
-    for (let i in this._list) {
-      if (this._list[i].status !== this.status.end) {
-        index = i
-        break
+    for (let i in this._tasks) {
+      let task = this._tasks[i]
+      if (!task.status.isEnd && !task.status.isError) {
+        return i
       }
     }
-    return index
+    return -1
   }
 
-  getTask (index) {
-    return this._list[index]
+  getTask (i) {
+    return this._tasks[i]
   }
 
   write () {
     fs.writeFileSync(this._file, this.toText)
   }
 }
+
+exports['TaskStatus'] = TaskStatus
+exports['Task'] = Task
+exports['Tasks'] = Tasks

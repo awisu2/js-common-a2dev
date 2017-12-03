@@ -1,8 +1,6 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -12,54 +10,146 @@ var Common = require('./Common').default;
 var fs = require('fs');
 
 var STATUS = {
-  START: '-',
+  START: 's',
+  ERROR: 'e',
   END: 'o'
 };
 
-var Tasks = function () {
-  _createClass(Tasks, [{
+var STATUS_SEPARATOR = {
+  BEFORE: '[',
+  AFTER: ']'
+};
+
+var TaskStatus = function () {
+  _createClass(TaskStatus, [{
     key: 'status',
     get: function get() {
       return this._status;
     }
   }, {
-    key: 'list',
+    key: 'length',
     get: function get() {
-      return this._list;
+      return this.toString().length;
+    }
+  }, {
+    key: 'isEnd',
+    get: function get() {
+      return this._status === STATUS.END;
+    }
+  }, {
+    key: 'isError',
+    get: function get() {
+      return this._status === STATUS.ERROR;
+    }
+  }]);
+
+  function TaskStatus() {
+    var status = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : STATUS.START;
+
+    _classCallCheck(this, TaskStatus);
+
+    if (status === undefined || status === null) status = STATUS.START;
+    this._status = status;
+  }
+
+  _createClass(TaskStatus, [{
+    key: 'toString',
+    value: function toString() {
+      return STATUS_SEPARATOR.BEFORE + this._status + STATUS_SEPARATOR.AFTER;
+    }
+  }, {
+    key: 'end',
+    value: function end() {
+      this._status = STATUS.END;
+    }
+  }, {
+    key: 'error',
+    value: function error() {
+      this._status = STATUS.ERROR;
+    }
+  }, {
+    key: 'update',
+    value: function update(status) {
+      this._status = status;
+    }
+  }]);
+
+  return TaskStatus;
+}();
+
+var Task = function () {
+  _createClass(Task, [{
+    key: 'status',
+    get: function get() {
+      return this._status;
+    }
+  }, {
+    key: 'text',
+    get: function get() {
+      return this._text;
+    }
+  }], [{
+    key: 'createByString',
+    value: function createByString(str) {
+      var statusStr = Common.betweenStr(str, STATUS_SEPARATOR.BEFORE, STATUS_SEPARATOR.AFTER, {
+        isHead: true,
+        default: null
+      });
+
+      var status = new TaskStatus(statusStr);
+      var text = str.substr(statusStr ? status.length : 0).trim();
+      return new Task(text, status);
+    }
+  }]);
+
+  function Task(text, status) {
+    _classCallCheck(this, Task);
+
+    if ((typeof status === 'undefined' ? 'undefined' : _typeof(status)) === 'object') {
+      this._status = status;
+    } else {
+      this._status = new TaskStatus(status);
+    }
+    this._text = text;
+  }
+
+  _createClass(Task, [{
+    key: 'toString',
+    value: function toString() {
+      return this._status.toString() + this._text;
+    }
+  }]);
+
+  return Task;
+}();
+
+var Tasks = function () {
+  _createClass(Tasks, [{
+    key: 'tasks',
+    get: function get() {
+      return this._tasks;
     }
   }]);
 
   function Tasks(file) {
-    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
     _classCallCheck(this, Tasks);
 
-    options = Common.fillObject(options, {
-      prefix: '[',
-      suffix: ']',
-      status: {
-        start: STATUS.START,
-        end: STATUS.END
-      }
-    });
     this._file = file;
-    this._prefix = options.prefix;
-    this._suffix = options.suffix;
-    this._status = options.status;
-    this._list = [];
-    if (this._file && fs.existsSync(this._file)) this.parse();
+    this._tasks = [];
+    if (this._file && fs.existsSync(this._file)) {
+      this._tasks = this.parse();
+    }
   }
 
   _createClass(Tasks, [{
     key: 'parse',
     value: function parse() {
-      var list = [];
+      var tasks = [];
       if (fs.existsSync(this._file)) {
         var data = fs.readFileSync(this._file);
-        list = this.parseText(data.toString());
+        tasks = this.parseText(data.toString());
       }
-      this._list = list;
-      return this._list;
+      return tasks;
     }
   }, {
     key: 'parseText',
@@ -68,41 +158,15 @@ var Tasks = function () {
 
       var tasks = [];
       for (var i in lines) {
-        var line = lines[i];
-        if (!line) continue;
-
-        var task = this.parseLine(line);
-        if (task) tasks.push(task);
+        if (!lines[i]) continue;
+        tasks.push(Task.createByString(lines[i]));
       }
-
       return tasks;
-    }
-  }, {
-    key: 'parseLine',
-    value: function parseLine(line) {
-      var status = Common.betweenStr(line, this._prefix, this._suffix, {
-        isHead: true, default: this.status.start
-      });
-
-      var statusStr = this._prefix + status + this._suffix;
-      var i = line.indexOf(statusStr) === 0 ? statusStr.length : 0;
-      return this.createTask(status, line.substr(i));
-    }
-  }, {
-    key: 'createTask',
-    value: function createTask() {
-      var status = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.status.start;
-      var text = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-
-      return {
-        status: status,
-        text: text
-      };
     }
   }, {
     key: 'addTask',
     value: function addTask(task) {
-      this._list.push(task);
+      this._tasks.push(task);
     }
   }, {
     key: 'addTaskByText',
@@ -113,26 +177,20 @@ var Tasks = function () {
       }
     }
   }, {
-    key: 'updateStatus',
-    value: function updateStatus(i, status) {
-      this._list[i].status = status;
-    }
-  }, {
     key: 'indexOfExists',
     value: function indexOfExists() {
-      var index = -1;
-      for (var i in this._list) {
-        if (this._list[i].status !== this.status.end) {
-          index = i;
-          break;
+      for (var i in this._tasks) {
+        var task = this._tasks[i];
+        if (!task.status.isEnd && !task.status.isError) {
+          return i;
         }
       }
-      return index;
+      return -1;
     }
   }, {
     key: 'getTask',
-    value: function getTask(index) {
-      return this._list[index];
+    value: function getTask(i) {
+      return this._tasks[i];
     }
   }, {
     key: 'write',
@@ -140,18 +198,19 @@ var Tasks = function () {
       fs.writeFileSync(this._file, this.toText);
     }
   }, {
-    key: 'toText',
+    key: 'toString',
     get: function get() {
-      var text = '';
-      for (var i in this._list) {
-        var task = this._list[i];
-        text += this._prefix + task.status + this._suffix + task.text + '\n';
+      var str = '';
+      for (var i in this._tasks) {
+        str += this._tasks[i].toString() + '\n';
       }
-      return text;
+      return str;
     }
   }]);
 
   return Tasks;
 }();
 
-exports.default = Tasks;
+exports['TaskStatus'] = TaskStatus;
+exports['Task'] = Task;
+exports['Tasks'] = Tasks;

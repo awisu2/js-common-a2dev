@@ -1,65 +1,67 @@
 const assert = require('assert')
-const Tasks = require('../dist/Tasks').default
+const {Tasks, Task} = require('../dist/Tasks')
 const TEXT = '[o]a\n[o]b\nc\nd\ne'
 const TEST_FILE = './sample.txt'
 
 describe('Task', () => {
   it('addTask', () => {
     let tasks = new Tasks()
-    tasks.addTask(tasks.createTask('foo', 'zzz'))
-    assert.deepEqual(tasks.list, [
-      { status: 'foo', text: 'zzz' }
-    ])
+
+    tasks.addTask(new Task('zzz'))
+
+    assert.equal(tasks.tasks[0].status.toString(), '[s]')
+    assert.equal(tasks.tasks[0].text, 'zzz')
+    assert.equal(tasks.tasks.length, 1)
   })
 
   it('parseText', () => {
     let tasks = new Tasks()
     let _tasks = tasks.parseText(TEXT)
     assert.deepEqual(_tasks, [
-      { status: 'o', text: 'a' },
-      { status: 'o', text: 'b' },
-      { status: '-', text: 'c' },
-      { status: '-', text: 'd' },
-      { status: '-', text: 'e' } ])
+      new Task('a', 'o'),
+      new Task('b', 'o'),
+      new Task('c', 's'),
+      new Task('d', 's'),
+      new Task('e', 's')])
   })
 
   it('addTaskByText', () => {
     let tasks = new Tasks()
     tasks.addTaskByText(TEXT)
 
-    assert.deepEqual(tasks.list, [
-      { status: 'o', text: 'a' },
-      { status: 'o', text: 'b' },
-      { status: '-', text: 'c' },
-      { status: '-', text: 'd' },
-      { status: '-', text: 'e' } ])
+    assert.deepEqual(tasks.tasks, [
+      new Task('a', 'o'),
+      new Task('b', 'o'),
+      new Task('c', 's'),
+      new Task('d', 's'),
+      new Task('e', 's')])
 
     let i = tasks.indexOfExists()
     assert.equal(i, 2)
 
     let task = tasks.getTask(i)
-    assert.deepEqual(task, { status: '-', text: 'c' })
+    assert.deepEqual(task, new Task('c', 's'))
   })
 
   it('updateStatus', () => {
     let tasks = new Tasks()
     tasks.addTaskByText(TEXT)
 
-    tasks.updateStatus(0, '123')
-    assert.deepEqual(tasks.getTask(0), { status: '123', text: 'a' })
+    tasks.tasks[0].status.update('123')
+    assert.deepEqual(tasks.getTask(0), new Task('a', '123'))
 
-    tasks.updateStatus(4, 'zz')
-    assert.deepEqual(tasks.getTask(0), { status: '123', text: 'a' })
-    assert.deepEqual(tasks.getTask(4), { status: 'zz', text: 'e' })
+    tasks.tasks[4].status.update('zz')
+    assert.deepEqual(tasks.getTask(0), new Task('a', '123'))
+    assert.deepEqual(tasks.getTask(4), new Task('e', 'zz'))
 
     let i = tasks.indexOfExists()
     assert.equal(i, 0)
   })
 
-  it('toText', () => {
+  it('toString', () => {
     let tasks = new Tasks()
     tasks.addTaskByText(TEXT)
-    assert.equal(tasks.toText, '[o]a\n[o]b\n[-]c\n[-]d\n[-]e\n')
+    assert.equal(tasks.toString, '[o]a\n[o]b\n[s]c\n[s]d\n[s]e\n')
   })
 
   it('write', () => {
