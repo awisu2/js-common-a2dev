@@ -158,6 +158,8 @@ export default class Common {
   }
 
   static fillStr (str, length, fill = '0') {
+    if (typeof str !== 'string') str = str.toString()
+
     let fillLength = fill.length
     if (fillLength === 0) {
       return str
@@ -188,5 +190,35 @@ export default class Common {
     }
     return betweeen
   }
+}
 
+Date.prototype.format = function (format) {
+  if (!format) return ''
+
+  let year = this.getFullYear()
+  let month = this.getMonth() + 1
+  let day = this.getDate()
+  let hour = this.getHours()
+  let minutes = this.getMinutes()
+  let second = this.getSeconds()
+
+  let yearF = year
+  let monthF = Common.fillStr(month, 2)
+  let dayF = Common.fillStr(day, 2)
+  let hourF = Common.fillStr(hour, 2)
+  let minutesF = Common.fillStr(minutes, 2)
+  let secondF = Common.fillStr(second, 2)
+
+  return format.replace(/YYYY/g, yearF)
+    .replace(/MM/g, monthF)
+    .replace(/DD/g, dayF)
+    .replace(/HH/g, hourF)
+    .replace(/mm/g, minutesF)
+    .replace(/SS/g, secondF)
+    .replace(/YY/g, year)
+    .replace(/M/g, month)
+    .replace(/D/g, day)
+    .replace(/H/g, hour)
+    .replace(/m/g, minutes)
+    .replace(/S/g, second)
 }

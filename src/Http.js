@@ -45,6 +45,9 @@ export default class Http {
         res.on('data', chunk => {
           body += chunk
         })
+        res.on('error', (err) => {
+          reject(err)
+        })
         let isRedirect = false
         switch (res.statusCode) {
           case 301: // Moved Permanently

@@ -175,4 +175,17 @@ export default class File {
     }
     return isSystemfile
   }
+
+  static canWrite (file) {
+    if (fs.existsSync(file)) {
+      return fs.statSync(file).isFile()
+    }
+
+    let dirname = path.dirname(file)
+    if (fs.existsSync(dirname) && fs.statSync(dirname).isDirectory()) {
+      return true
+    }
+
+    return false
+  }
 }

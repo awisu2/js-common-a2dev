@@ -195,6 +195,8 @@ var Common = function () {
     value: function fillStr(str, length) {
       var fill = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '0';
 
+      if (typeof str !== 'string') str = str.toString();
+
       var fillLength = fill.length;
       if (fillLength === 0) {
         return str;
@@ -248,3 +250,24 @@ var Common = function () {
 }();
 
 exports.default = Common;
+
+
+Date.prototype.format = function (format) {
+  if (!format) return '';
+
+  var year = this.getFullYear();
+  var month = this.getMonth() + 1;
+  var day = this.getDate();
+  var hour = this.getHours();
+  var minutes = this.getMinutes();
+  var second = this.getSeconds();
+
+  var yearF = year;
+  var monthF = Common.fillStr(month, 2);
+  var dayF = Common.fillStr(day, 2);
+  var hourF = Common.fillStr(hour, 2);
+  var minutesF = Common.fillStr(minutes, 2);
+  var secondF = Common.fillStr(second, 2);
+
+  return format.replace(/YYYY/g, yearF).replace(/MM/g, monthF).replace(/DD/g, dayF).replace(/HH/g, hourF).replace(/mm/g, minutesF).replace(/SS/g, secondF).replace(/YY/g, year).replace(/M/g, month).replace(/D/g, day).replace(/H/g, hour).replace(/m/g, minutes).replace(/S/g, second);
+};

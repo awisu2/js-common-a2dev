@@ -84,6 +84,9 @@ var Http = function () {
           res.on('data', function (chunk) {
             body += chunk;
           });
+          res.on('error', function (err) {
+            reject(err);
+          });
           var isRedirect = false;
           switch (res.statusCode) {
             case 301: // Moved Permanently

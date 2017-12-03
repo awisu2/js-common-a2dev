@@ -223,6 +223,20 @@ var File = function () {
       return isSystemfile;
     }
   }, {
+    key: 'canWrite',
+    value: function canWrite(file) {
+      if (_fs2.default.existsSync(file)) {
+        return _fs2.default.statSync(file).isFile();
+      }
+
+      var dirname = _path2.default.dirname(file);
+      if (_fs2.default.existsSync(dirname) && _fs2.default.statSync(dirname).isDirectory()) {
+        return true;
+      }
+
+      return false;
+    }
+  }, {
     key: 'SYSTEMFILE',
     get: function get() {
       return SYSTEMFILE;

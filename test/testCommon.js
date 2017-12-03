@@ -184,6 +184,9 @@ describe('Common', () => {
     let str = 'abc'
     assert.equal(Common.fillStr(str, 10), '0000000abc')
     assert.equal(Common.fillStr(str, 10, '1234'), '1234123abc')
+
+    assert.equal(Common.fillStr('1', 2), '01')
+    assert.equal(Common.fillStr(1, 2), '01')
   })
 
   it('randomInt', () => {
@@ -260,5 +263,22 @@ describe('Common', () => {
     assert.equal(Common.betweenStr(str, 'zzz', '123', {
       isHead: true
     }), 'abc', 'no get isHead')
+  })
+
+  it('DateFormat', () => {
+    let d = new Date('2012-01-02T03:04:05')
+    assert.equal(d.format('YYYY'), '2012')
+    assert.equal(d.format('YY'), '2012')
+    assert.equal(d.format('MM'), '01')
+    assert.equal(d.format('M'), '1')
+    assert.equal(d.format('DD'), '02')
+    assert.equal(d.format('D'), '2')
+    assert.equal(d.format('HH'), '03')
+    assert.equal(d.format('H'), '3')
+    assert.equal(d.format('mm'), '04')
+    assert.equal(d.format('m'), '4')
+    assert.equal(d.format('SS'), '05')
+    assert.equal(d.format('S'), '5')
+    assert.equal(d.format('YYYY-MM-DD HH:mm:SS'), '2012-01-02 03:04:05')
   })
 })

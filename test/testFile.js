@@ -137,4 +137,19 @@ describe('File', () => {
 
     removeTestDir(FILES)
   })
+
+  it('canWrite', () => {
+    makeTestFiles(FILES)
+
+    assert.ok(!File.canWrite(TEST_DIR), 'directory can not write')
+    assert.ok(!File.canWrite(TEST_DIR + '/a'), 'directory can not write')
+
+    assert.ok(File.canWrite(TEST_DIR + '/f'), 'file can write')
+    assert.ok(File.canWrite(TEST_DIR + '/b/._g'), 'file can write')
+
+    assert.ok(File.canWrite(TEST_DIR + '/a/zzzzz'), 'can write')
+    assert.ok(!File.canWrite(TEST_DIR + '/a/zz/zzzzz'), 'can not write no directory')
+
+    removeTestDir(FILES)
+  })
 })
