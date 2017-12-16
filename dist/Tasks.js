@@ -73,6 +73,11 @@ var TaskStatus = function () {
       return this._status === this._config.status.error;
     }
   }, {
+    key: 'isFinish',
+    get: function get() {
+      return this.isEnd || this.isError;
+    }
+  }, {
     key: 'length',
     get: function get() {
       return this.toString().length;
@@ -318,9 +323,7 @@ var Tasks = function () {
     value: function indexOfExists() {
       for (var i in this._tasks) {
         var task = this._tasks[i];
-        if (!task.status.isEnd && !task.status.isError) {
-          return i;
-        }
+        if (!task.status.isFinish) return i;
       }
       return -1;
     }
@@ -338,6 +341,24 @@ var Tasks = function () {
     key: 'write',
     value: function write() {
       fs.writeFileSync(this._file, this.toString);
+    }
+  }, {
+    key: 'indexOfSearch',
+    value: function indexOfSearch(pattern) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+      options = Common.fillObject(options, {
+        isExists: true
+      });
+
+      for (var i in this._tasks) {
+        var task = this._tasks[i];
+        if (task.text.indexOf(pattern) === -1) continue;
+
+        if (!options.isExists) return i;
+        if (!task.status.isFinish) return i;
+      }
+      return -1;
     }
   }, {
     key: 'toString',

@@ -63,19 +63,46 @@ describe('Task', () => {
     assert.equal(tasks.toString, '[o]a\n[o]b\n[s]c\n[s]d\n[s]e\n')
   })
 
+  it('update', () => {
+    let tasks = new Tasks()
+    tasks.addByText(TEXT)
+
+    let task = tasks.get(3)
+    task.status.end()
+    tasks.get(0).status.error()
+    tasks.get(1).status.update('ZZ')
+
+    assert.deepEqual(tasks.tasks, [
+      new Task('a', new TaskStatus('e')),
+      new Task('b', new TaskStatus('ZZ')),
+      new Task('c', new TaskStatus('s')),
+      new Task('d', new TaskStatus('o')),
+      new Task('e', new TaskStatus('s'))])
+
+    assert.equal(tasks.indexOfSearch('d', {isExists: false}), 3)
+    assert.equal(tasks.indexOfSearch('d'), -1)
+  })
+
   it('write', () => {
     fs.removeSync(TEST_FILE)
 
     let tasks = new Tasks(null, {file: TEST_FILE})
     tasks.addByText(TEXT)
+
+    // update status
+    let task = tasks.get(3)
+    task.status.end()
+    tasks.get(0).status.error()
+    tasks.get(1).status.update('ZZ')
+
     tasks.write()
 
     tasks = new Tasks(null, {file: TEST_FILE})
     assert.deepEqual(tasks.tasks, [
-      new Task('a', new TaskStatus('o')),
-      new Task('b', new TaskStatus('o')),
+      new Task('a', new TaskStatus('e')),
+      new Task('b', new TaskStatus('ZZ')),
       new Task('c', new TaskStatus('s')),
-      new Task('d', new TaskStatus('s')),
+      new Task('d', new TaskStatus('o')),
       new Task('e', new TaskStatus('s'))])
 
     // dowble write check
@@ -84,10 +111,10 @@ describe('Task', () => {
 
     tasks = new Tasks(null, {file: TEST_FILE})
     assert.deepEqual(tasks.tasks, [
-      new Task('a', new TaskStatus('o')),
-      new Task('b', new TaskStatus('o')),
+      new Task('a', new TaskStatus('e')),
+      new Task('b', new TaskStatus('ZZ')),
       new Task('c', new TaskStatus('s')),
-      new Task('d', new TaskStatus('s')),
+      new Task('d', new TaskStatus('o')),
       new Task('e', new TaskStatus('s'))])
 
     // dowble write check

@@ -30,6 +30,7 @@ class TaskStatus {
   get isStart () { return this._status === this._config.status.start }
   get isEnd () { return this._status === this._config.status.end }
   get isError () { return this._status === this._config.status.error }
+  get isFinish () { return this.isEnd || this.isError }
 
   get length () { return this.toString().length }
 
@@ -212,9 +213,7 @@ class Tasks {
   indexOfExists () {
     for (let i in this._tasks) {
       let task = this._tasks[i]
-      if (!task.status.isEnd && !task.status.isError) {
-        return i
-      }
+      if (!task.status.isFinish) return i
     }
     return -1
   }
@@ -229,6 +228,21 @@ class Tasks {
 
   write () {
     fs.writeFileSync(this._file, this.toString)
+  }
+
+  indexOfSearch (pattern, options = {}) {
+    options = Common.fillObject(options, {
+      isExists: true
+    })
+
+    for (let i in this._tasks) {
+      let task = this._tasks[i]
+      if (task.text.indexOf(pattern) === -1) continue
+
+      if (!options.isExists) return i
+      if (!task.status.isFinish) return i
+    }
+    return -1
   }
 }
 
