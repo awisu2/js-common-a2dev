@@ -6,7 +6,10 @@ module.exports = {
   Log: require('./dist/Log.js').default
 }
 
-let {Tasks, Task, TaskStatus} = require('./dist/Tasks.js')
+let {Tasks, Task, TaskStatus, TasksConfig, TaskConfig, TaskStatusConfig} = require('./dist/Tasks.js')
 module.exports['Tasks'] = Tasks
 module.exports['Task'] = Task
 module.exports['TaskStatus'] = TaskStatus
+module.exports['TasksConfig'] = TasksConfig
+module.exports['TaskConfig'] = TaskConfig
+module.exports['TaskStatusConfig'] = TaskStatusConfig

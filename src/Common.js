@@ -177,18 +177,26 @@ export default class Common {
   static betweenStr (str, prefix, suffix, options = {}) {
     options = Common.fillObject(options, {
       default: '',
-      isHead: false
+      isHead: false,
+      isDetail: false
     })
-    let betweeen = options.default
-    let index = str.indexOf(prefix)
-    if (index !== -1 && (!options.isHead || index === 0)) {
-      let indexSuffix = str.indexOf(suffix, index + 1)
-      if (indexSuffix !== -1) {
-        let prefixLength = index + prefix.length
-        betweeen = str.substr(prefixLength, indexSuffix - prefixLength)
-      }
-    }
-    return betweeen
+    let regStr = this.escapeRegStr(prefix) + '(.*?)' + this.escapeRegStr(suffix)
+    if (options.isHead) regStr = '^' + regStr
+    let reg = new RegExp(regStr)
+    let match = str.match(reg)
+
+    // when not match
+    if (!match) return options.isDetail ? null : options.default
+
+    // return
+    return options.isDetail ? match : match[1]
+  }
+
+  // escapeRegStr
+  // strs: \ * + . ? { } ( ) [ ] ^ $ - | /
+  static escapeRegStr (str) {
+    let reg = new RegExp('([\\\\*\\+\\.\\?\\{\\}\\(\\)\\[\\]\\^\\$\\-\\|\\/])', 'g')
+    return str.replace(reg, '\\$&')
   }
 }
 

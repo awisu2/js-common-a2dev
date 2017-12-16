@@ -216,18 +216,29 @@ var Common = function () {
 
       options = Common.fillObject(options, {
         default: '',
-        isHead: false
+        isHead: false,
+        isDetail: false
       });
-      var betweeen = options.default;
-      var index = str.indexOf(prefix);
-      if (index !== -1 && (!options.isHead || index === 0)) {
-        var indexSuffix = str.indexOf(suffix, index + 1);
-        if (indexSuffix !== -1) {
-          var prefixLength = index + prefix.length;
-          betweeen = str.substr(prefixLength, indexSuffix - prefixLength);
-        }
-      }
-      return betweeen;
+      var regStr = this.escapeRegStr(prefix) + '(.*?)' + this.escapeRegStr(suffix);
+      if (options.isHead) regStr = '^' + regStr;
+      var reg = new RegExp(regStr);
+      var match = str.match(reg);
+
+      // when not match
+      if (!match) return options.isDetail ? null : options.default;
+
+      // return
+      return options.isDetail ? match : match[1];
+    }
+
+    // escapeRegStr
+    // strs: \ * + . ? { } ( ) [ ] ^ $ - | /
+
+  }, {
+    key: 'escapeRegStr',
+    value: function escapeRegStr(str) {
+      var reg = new RegExp('([\\\\*\\+\\.\\?\\{\\}\\(\\)\\[\\]\\^\\$\\-\\|\\/])', 'g');
+      return str.replace(reg, '\\$&');
     }
   }, {
     key: 'TYPE_STRING',

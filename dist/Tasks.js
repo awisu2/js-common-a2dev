@@ -1,7 +1,5 @@
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -9,63 +7,106 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Common = require('./Common').default;
 var fs = require('fs');
 
-var STATUS = {
-  START: 's',
-  ERROR: 'e',
-  END: 'o'
-};
-
-var STATUS_SEPARATOR = {
-  BEFORE: '[',
-  AFTER: ']'
-};
-
-var TaskStatus = function () {
-  _createClass(TaskStatus, [{
+var TaskStatusConfig = function () {
+  _createClass(TaskStatusConfig, [{
+    key: 'separator',
+    get: function get() {
+      return this._separator;
+    }
+  }, {
     key: 'status',
     get: function get() {
       return this._status;
+    }
+  }]);
+
+  function TaskStatusConfig() {
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, TaskStatusConfig);
+
+    options = Common.fillObject(options, {
+      separator: {
+        before: '[',
+        after: ']'
+      },
+      status: {
+        start: 's',
+        error: 'e',
+        end: 'o'
+      }
+    });
+    this._separator = options.separator;
+    this._status = options.status;
+  }
+
+  return TaskStatusConfig;
+}();
+
+var TaskStatus = function () {
+  _createClass(TaskStatus, [{
+    key: 'config',
+    get: function get() {
+      return this._coonfig;
+    },
+    set: function set(v) {
+      this._coonfig = v;
+    }
+  }, {
+    key: 'status',
+    get: function get() {
+      return this._status;
+    }
+  }, {
+    key: 'isStart',
+    get: function get() {
+      return this._status === this._config.status.start;
+    }
+  }, {
+    key: 'isEnd',
+    get: function get() {
+      return this._status === this._config.status.end;
+    }
+  }, {
+    key: 'isError',
+    get: function get() {
+      return this._status === this._config.status.error;
     }
   }, {
     key: 'length',
     get: function get() {
       return this.toString().length;
     }
-  }, {
-    key: 'isEnd',
-    get: function get() {
-      return this._status === STATUS.END;
-    }
-  }, {
-    key: 'isError',
-    get: function get() {
-      return this._status === STATUS.ERROR;
-    }
   }]);
 
-  function TaskStatus() {
-    var status = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : STATUS.START;
+  function TaskStatus(status) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
     _classCallCheck(this, TaskStatus);
 
-    if (status === undefined || status === null) status = STATUS.START;
-    this._status = status;
+    this._config = options.config || new TaskStatusConfig();
+    this._status = status === undefined || status === null ? this._config.status.start : status;
   }
 
   _createClass(TaskStatus, [{
     key: 'toString',
     value: function toString() {
-      return STATUS_SEPARATOR.BEFORE + this._status + STATUS_SEPARATOR.AFTER;
+      return this._config.separator.before + this._status + this._config.separator.after;
+    }
+  }, {
+    key: 'start',
+    value: function start() {
+      this._status = this._config.status.start;
     }
   }, {
     key: 'end',
     value: function end() {
-      this._status = STATUS.END;
+      this._status = this._config.status.end;
     }
   }, {
     key: 'error',
     value: function error() {
-      this._status = STATUS.ERROR;
+      this._status = this._config.status.error;
     }
   }, {
     key: 'update',
@@ -77,8 +118,35 @@ var TaskStatus = function () {
   return TaskStatus;
 }();
 
+var TaskConfig = function () {
+  _createClass(TaskConfig, [{
+    key: 'statusConfig',
+    get: function get() {
+      return this._statusConfig;
+    }
+  }]);
+
+  function TaskConfig() {
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, TaskConfig);
+
+    this._statusConfig = options.statusConfig || new TaskStatusConfig();
+  }
+
+  return TaskConfig;
+}();
+
 var Task = function () {
   _createClass(Task, [{
+    key: 'config',
+    get: function get() {
+      return this._coonfig;
+    },
+    set: function set(v) {
+      this._coonfig = v;
+    }
+  }, {
     key: 'status',
     get: function get() {
       return this._status;
@@ -88,28 +156,18 @@ var Task = function () {
     get: function get() {
       return this._text;
     }
-  }], [{
-    key: 'createByString',
-    value: function createByString(str) {
-      var statusStr = Common.betweenStr(str, STATUS_SEPARATOR.BEFORE, STATUS_SEPARATOR.AFTER, {
-        isHead: true,
-        default: null
-      });
-
-      var status = new TaskStatus(statusStr);
-      var text = str.substr(statusStr ? status.length : 0).trim();
-      return new Task(text, status);
-    }
   }]);
 
-  function Task(text, status) {
+  function Task(text) {
+    var status = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
     _classCallCheck(this, Task);
 
-    if ((typeof status === 'undefined' ? 'undefined' : _typeof(status)) === 'object') {
-      this._status = status;
-    } else {
-      this._status = new TaskStatus(status);
-    }
+    this._config = options.config || new TasksConfig();
+    this._status = status || new TaskStatus(status, {
+      options: this._config.statusConfig
+    });
     this._text = text;
   }
 
@@ -118,62 +176,141 @@ var Task = function () {
     value: function toString() {
       return this._status.toString() + this._text;
     }
+  }], [{
+    key: 'createByString',
+    value: function createByString(str, config) {
+      if (!config) config = new TaskConfig();
+
+      // get status
+      var info = Task.statusInfoByStr(str, config);
+      var status = new TaskStatus(info.status, {
+        options: config.statusConfig
+      });
+
+      // text
+      var text = str.substr(info.length).trim();
+      // console.log(str, info, '|' + status.status + '|', text)
+      return new Task(text, status);
+    }
+  }, {
+    key: 'statusInfoByStr',
+    value: function statusInfoByStr(str, config) {
+      // analyse status
+      var match = Common.betweenStr(str, config.statusConfig.separator.before, config.statusConfig.separator.after, {
+        isHead: true,
+        isDetail: true
+      });
+
+      if (!match) {
+        return {
+          status: null,
+          length: 0
+        };
+      }
+      return {
+        status: match[1],
+        length: match[0].length
+      };
+    }
   }]);
 
   return Task;
 }();
 
+var TasksConfig = function () {
+  _createClass(TasksConfig, [{
+    key: 'taskConfig',
+    get: function get() {
+      return this._taskConfig;
+    }
+  }]);
+
+  function TasksConfig() {
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, TasksConfig);
+
+    this._taskConfig = options.taskConfig || new TaskConfig();
+  }
+
+  return TasksConfig;
+}();
+
 var Tasks = function () {
   _createClass(Tasks, [{
+    key: 'config',
+    get: function get() {
+      return this._coonfig;
+    },
+    set: function set(v) {
+      this._coonfig = v;
+    }
+  }, {
     key: 'tasks',
     get: function get() {
       return this._tasks;
     }
+  }, {
+    key: 'file',
+    get: function get() {
+      return this._file;
+    }
   }]);
 
-  function Tasks(file) {
+  function Tasks(tasks) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
     _classCallCheck(this, Tasks);
 
-    this._file = file;
-    this._tasks = [];
-    if (this._file && fs.existsSync(this._file)) {
-      this._tasks = this.parse();
-    }
+    this._config = options.config || new TasksConfig();
+
+    // tasks
+    this._tasks = tasks ? Common.isArray(tasks) ? tasks : [tasks] : [];
+
+    // add tasks from file
+    this._file = options.file || null;
+    this.parse();
   }
 
   _createClass(Tasks, [{
     key: 'parse',
     value: function parse() {
-      var tasks = [];
-      if (fs.existsSync(this._file)) {
-        var data = fs.readFileSync(this._file);
-        tasks = this.parseText(data.toString());
-      }
-      return tasks;
-    }
-  }, {
-    key: 'parseText',
-    value: function parseText(text) {
-      var lines = text.split('\n');
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-      var tasks = [];
-      for (var i in lines) {
-        if (!lines[i]) continue;
-        tasks.push(Task.createByString(lines[i]));
+      options = Common.fillObject(options, {
+        isPush: true
+      });
+
+      if (!this._file) return;
+
+      var tasks = this.parseByFile(this._file);
+      if (options.isPush) {
+        for (var i in tasks) {
+          this._tasks.push(tasks[i]);
+        }
+      } else {
+        this._tasks = tasks;
       }
-      return tasks;
     }
   }, {
-    key: 'addTask',
-    value: function addTask(task) {
+    key: 'parseByFile',
+    value: function parseByFile(file) {
+      if (!fs.existsSync(this._file)) return [];
+
+      var data = fs.readFileSync(this._file);
+      return Tasks.parseText(data.toString());
+    }
+  }, {
+    key: 'add',
+    value: function add(task) {
       this._tasks.push(task);
     }
   }, {
-    key: 'addTaskByText',
-    value: function addTaskByText(text) {
-      var tasks = this.parseText(text);
+    key: 'addByText',
+    value: function addByText(text) {
+      var tasks = Tasks.parseText(text);
       for (var i in tasks) {
-        this.addTask(tasks[i]);
+        this.add(tasks[i]);
       }
     }
   }, {
@@ -188,14 +325,19 @@ var Tasks = function () {
       return -1;
     }
   }, {
-    key: 'getTask',
-    value: function getTask(i) {
+    key: 'get',
+    value: function get(i) {
       return this._tasks[i];
+    }
+  }, {
+    key: 'clear',
+    value: function clear() {
+      this._tasks = [];
     }
   }, {
     key: 'write',
     value: function write() {
-      fs.writeFileSync(this._file, this.toText);
+      fs.writeFileSync(this._file, this.toString);
     }
   }, {
     key: 'toString',
@@ -206,6 +348,21 @@ var Tasks = function () {
       }
       return str;
     }
+  }], [{
+    key: 'parseText',
+    value: function parseText(text) {
+      var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+      var taskConfig = config ? config.taskConfig : new TaskConfig();
+
+      var lines = text.split('\n');
+      var tasks = [];
+      for (var i in lines) {
+        if (!lines[i].trim()) continue;
+        tasks.push(Task.createByString(lines[i], taskConfig));
+      }
+      return tasks;
+    }
   }]);
 
   return Tasks;
@@ -214,3 +371,7 @@ var Tasks = function () {
 exports['TaskStatus'] = TaskStatus;
 exports['Task'] = Task;
 exports['Tasks'] = Tasks;
+
+exports['TaskStatusConfig'] = TaskStatusConfig;
+exports['TaskConfig'] = TaskConfig;
+exports['TasksConfig'] = TasksConfig;

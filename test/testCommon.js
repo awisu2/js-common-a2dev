@@ -254,7 +254,7 @@ describe('Common', () => {
   })
 
   it('betweenStr', () => {
-    let str = 'zzzabc123def'
+    let str = 'zzzabc123defabc345def'
     assert.equal(Common.betweenStr(str, 'abc', 'def'), '123', 'check missing ' + str)
     assert.equal(Common.betweenStr(str, 'abc', 'def', {
       default: 'yyy',
@@ -263,6 +263,23 @@ describe('Common', () => {
     assert.equal(Common.betweenStr(str, 'zzz', '123', {
       isHead: true
     }), 'abc', 'no get isHead')
+
+    {
+      let ans = ['zzzabc123', 'abc']
+      ans.index = 0
+      ans.input = str
+      assert.deepEqual(Common.betweenStr(str, 'zzz', '123', {
+        isHead: true,
+        isDetail: true
+      }), ans, 'no get isHead')
+    }
+
+    {
+      assert.deepEqual(Common.betweenStr(str, 'ert', 'gdd', {
+        isHead: true,
+        isDetail: true
+      }), null, 'no get isHead')
+    }
   })
 
   it('DateFormat', () => {
@@ -280,5 +297,9 @@ describe('Common', () => {
     assert.equal(d.format('SS'), '05')
     assert.equal(d.format('S'), '5')
     assert.equal(d.format('YYYY-MM-DD HH:mm:SS'), '2012-01-02 03:04:05')
+  })
+
+  it('escapeRegStr', () => {
+    assert.equal(Common.escapeRegStr('[abc] ggs()da'), '\\[abc\\] ggs\\(\\)da')
   })
 })

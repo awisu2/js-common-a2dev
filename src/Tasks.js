@@ -1,38 +1,60 @@
 const Common = require('./Common').default
 const fs = require('fs')
 
-const STATUS = {
-  START: 's',
-  ERROR: 'e',
-  END: 'o'
-}
+class TaskStatusConfig {
+  get separator () { return this._separator }
+  get status () { return this._status }
 
-const STATUS_SEPARATOR = {
-  BEFORE: '[',
-  AFTER: ']'
+  constructor (options = {}) {
+    options = Common.fillObject(options, {
+      separator: {
+        before: '[',
+        after: ']'
+      },
+      status: {
+        start: 's',
+        error: 'e',
+        end: 'o'
+      }
+    })
+    this._separator = options.separator
+    this._status = options.status
+  }
 }
 
 class TaskStatus {
-  get status () { return this._status }
-  get length () { return this.toString().length }
-  get isEnd () { return this._status === STATUS.END }
-  get isError () { return this._status === STATUS.ERROR }
+  get config () { return this._coonfig }
+  set config (v) { this._coonfig = v }
 
-  constructor (status = STATUS.START) {
-    if (status === undefined || status === null) status = STATUS.START
-    this._status = status
+  get status () { return this._status }
+  get isStart () { return this._status === this._config.status.start }
+  get isEnd () { return this._status === this._config.status.end }
+  get isError () { return this._status === this._config.status.error }
+
+  get length () { return this.toString().length }
+
+  constructor (status, options = {}) {
+    this._config = options.config || new TaskStatusConfig()
+    this._status = (status === undefined || status === null)
+      ? this._config.status.start : status
   }
 
   toString () {
-    return STATUS_SEPARATOR.BEFORE + this._status + STATUS_SEPARATOR.AFTER
+    return this._config.separator.before +
+      this._status +
+      this._config.separator.after
+  }
+
+  start () {
+    this._status = this._config.status.start
   }
 
   end () {
-    this._status = STATUS.END
+    this._status = this._config.status.end
   }
 
   error () {
-    this._status = STATUS.ERROR
+    this._status = this._config.status.error
   }
 
   update (status) {
@@ -40,28 +62,63 @@ class TaskStatus {
   }
 }
 
+class TaskConfig {
+  get statusConfig () { return this._statusConfig }
+
+  constructor (options = {}) {
+    this._statusConfig = options.statusConfig || new TaskStatusConfig()
+  }
+}
+
 class Task {
+  get config () { return this._coonfig }
+  set config (v) { this._coonfig = v }
+
   get status () { return this._status }
   get text () { return this._text }
 
-  static createByString (str) {
-    let statusStr = Common.betweenStr(str, STATUS_SEPARATOR.BEFORE, STATUS_SEPARATOR.AFTER, {
-      isHead: true,
-      default: null
+  constructor (text, status = null, options = {}) {
+    this._config = options.config || new TasksConfig()
+    this._status = status || new TaskStatus(status, {
+      options: this._config.statusConfig
+    })
+    this._text = text
+  }
+
+  static createByString (str, config) {
+    if (!config) config = new TaskConfig()
+
+    // get status
+    let info = Task.statusInfoByStr(str, config)
+    let status = new TaskStatus(info.status, {
+      options: config.statusConfig
     })
 
-    let status = new TaskStatus(statusStr)
-    let text = str.substr(statusStr ? status.length : 0).trim()
+    // text
+    let text = str.substr(info.length).trim()
+    // console.log(str, info, '|' + status.status + '|', text)
     return new Task(text, status)
   }
 
-  constructor (text, status) {
-    if (typeof status === 'object') {
-      this._status = status
-    } else {
-      this._status = new TaskStatus(status)
+  static statusInfoByStr (str, config) {
+    // analyse status
+    let match = Common.betweenStr(str,
+      config.statusConfig.separator.before,
+      config.statusConfig.separator.after, {
+        isHead: true,
+        isDetail: true
+      })
+
+    if (!match) {
+      return {
+        status: null,
+        length: 0
+      }
     }
-    this._text = text
+    return {
+      status: match[1],
+      length: match[0].length
+    }
   }
 
   toString () {
@@ -69,35 +126,66 @@ class Task {
   }
 }
 
+class TasksConfig {
+  get taskConfig () { return this._taskConfig }
+
+  constructor (options = {}) {
+    this._taskConfig = options.taskConfig || new TaskConfig()
+  }
+}
+
 class Tasks {
-  get tasks () {
-    return this._tasks
+  get config () { return this._coonfig }
+  set config (v) { this._coonfig = v }
+
+  get tasks () { return this._tasks }
+  get file () { return this._file }
+
+  constructor (tasks, options = {}) {
+    this._config = options.config || new TasksConfig()
+
+    // tasks
+    this._tasks = tasks
+      ? (Common.isArray(tasks) ? tasks : [tasks])
+      : []
+
+    // add tasks from file
+    this._file = options.file || null
+    this.parse()
   }
 
-  constructor (file) {
-    this._file = file
-    this._tasks = []
-    if (this._file && fs.existsSync(this._file)) {
-      this._tasks = this.parse()
+  parse (options = {}) {
+    options = Common.fillObject(options, {
+      isPush: true
+    })
+
+    if (!this._file) return
+
+    let tasks = this.parseByFile(this._file)
+    if (options.isPush) {
+      for (let i in tasks) {
+        this._tasks.push(tasks[i])
+      }
+    } else {
+      this._tasks = tasks
     }
   }
 
-  parse () {
-    let tasks = []
-    if (fs.existsSync(this._file)) {
-      let data = fs.readFileSync(this._file)
-      tasks = this.parseText(data.toString())
-    }
-    return tasks
+  parseByFile (file) {
+    if (!fs.existsSync(this._file)) return []
+
+    let data = fs.readFileSync(this._file)
+    return Tasks.parseText(data.toString())
   }
 
-  parseText (text) {
+  static parseText (text, config = null) {
+    let taskConfig = config ? config.taskConfig : new TaskConfig()
+
     let lines = text.split('\n')
-
     let tasks = []
     for (let i in lines) {
-      if (!lines[i]) continue
-      tasks.push(Task.createByString(lines[i]))
+      if (!lines[i].trim()) continue
+      tasks.push(Task.createByString(lines[i], taskConfig))
     }
     return tasks
   }
@@ -110,14 +198,14 @@ class Tasks {
     return str
   }
 
-  addTask (task) {
+  add (task) {
     this._tasks.push(task)
   }
 
-  addTaskByText (text) {
-    let tasks = this.parseText(text)
+  addByText (text) {
+    let tasks = Tasks.parseText(text)
     for (let i in tasks) {
-      this.addTask(tasks[i])
+      this.add(tasks[i])
     }
   }
 
@@ -131,15 +219,23 @@ class Tasks {
     return -1
   }
 
-  getTask (i) {
+  get (i) {
     return this._tasks[i]
   }
 
+  clear () {
+    this._tasks = []
+  }
+
   write () {
-    fs.writeFileSync(this._file, this.toText)
+    fs.writeFileSync(this._file, this.toString)
   }
 }
 
 exports['TaskStatus'] = TaskStatus
 exports['Task'] = Task
 exports['Tasks'] = Tasks
+
+exports['TaskStatusConfig'] = TaskStatusConfig
+exports['TaskConfig'] = TaskConfig
+exports['TasksConfig'] = TasksConfig
