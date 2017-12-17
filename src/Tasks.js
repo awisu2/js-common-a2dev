@@ -152,10 +152,10 @@ class Tasks {
 
     // add tasks from file
     this._file = options.file || null
-    this.parse()
+    this.load()
   }
 
-  parse (options = {}) {
+  load (options = {}) {
     options = Common.fillObject(options, {
       isPush: true
     })
@@ -170,6 +170,11 @@ class Tasks {
     } else {
       this._tasks = tasks
     }
+  }
+
+  reload () {
+    this._tasks = []
+    this.load({isPush: false})
   }
 
   parseByFile (file) {
@@ -201,6 +206,10 @@ class Tasks {
 
   add (task) {
     this._tasks.push(task)
+  }
+
+  concat (tasks) {
+    this._tasks = this._tasks.concat(tasks)
   }
 
   addByText (text) {

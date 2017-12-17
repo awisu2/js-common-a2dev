@@ -274,12 +274,12 @@ var Tasks = function () {
 
     // add tasks from file
     this._file = options.file || null;
-    this.parse();
+    this.load();
   }
 
   _createClass(Tasks, [{
-    key: 'parse',
-    value: function parse() {
+    key: 'load',
+    value: function load() {
       var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
       options = Common.fillObject(options, {
@@ -298,6 +298,12 @@ var Tasks = function () {
       }
     }
   }, {
+    key: 'reload',
+    value: function reload() {
+      this._tasks = [];
+      this.load({ isPush: false });
+    }
+  }, {
     key: 'parseByFile',
     value: function parseByFile(file) {
       if (!fs.existsSync(this._file)) return [];
@@ -309,6 +315,11 @@ var Tasks = function () {
     key: 'add',
     value: function add(task) {
       this._tasks.push(task);
+    }
+  }, {
+    key: 'concat',
+    value: function concat(tasks) {
+      this._tasks = this._tasks.concat(tasks);
     }
   }, {
     key: 'addByText',

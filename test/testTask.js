@@ -83,6 +83,42 @@ describe('Task', () => {
     assert.equal(tasks.indexOfSearch('d'), -1)
   })
 
+  it('reload', () => {
+    fs.removeSync(TEST_FILE)
+
+    let tasks = new Tasks([
+      new Task('z1'),
+      new Task('z2')
+    ], {file: TEST_FILE})
+    tasks.write()
+
+    assert.deepEqual(tasks.tasks, [
+      new Task('z1', new TaskStatus('s')),
+      new Task('z2', new TaskStatus('s'))], 'error constractor behavior')
+
+    tasks = new Tasks(null, {file: TEST_FILE})
+    tasks.concat([
+      new Task('z3'),
+      new Task('z4'),
+      new Task('z5')])
+
+    assert.ok(tasks.tasks.length, 5, 'no same length after concat')
+
+    assert.deepEqual(tasks.tasks, [
+      new Task('z1', new TaskStatus('s')),
+      new Task('z2', new TaskStatus('s')),
+      new Task('z3', new TaskStatus('s')),
+      new Task('z4', new TaskStatus('s')),
+      new Task('z5', new TaskStatus('s'))], 'error concat behavior')
+
+    tasks.reload()
+    assert.deepEqual(tasks.tasks, [
+      new Task('z1'),
+      new Task('z2')])
+
+    fs.removeSync(TEST_FILE)
+  })
+
   it('write', () => {
     fs.removeSync(TEST_FILE)
 
@@ -120,6 +156,8 @@ describe('Task', () => {
     // dowble write check
     tasks = new Tasks(null, {file: TEST_FILE})
     tasks.write()
+
+    fs.removeSync(TEST_FILE)
   })
 
   it('clear', () => {
@@ -129,9 +167,5 @@ describe('Task', () => {
 
     tasks.clear()
     assert.ok(tasks.tasks.length === 0)
-  })
-
-  it('deletefile', () => {
-    fs.removeSync(TEST_FILE)
   })
 })
