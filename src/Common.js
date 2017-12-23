@@ -198,6 +198,18 @@ export default class Common {
     let reg = new RegExp('([\\\\*\\+\\.\\?\\{\\}\\(\\)\\[\\]\\^\\$\\-\\|\\/])', 'g')
     return str.replace(reg, '\\$&')
   }
+
+  static disallowStringFileName () {
+    return ['\\', '/', ':', '*', '?', '"', '<', '>', '|']
+  }
+
+  static replaceDisallowStringFileName (str, replace = '') {
+    let disallows = this.disallowStringFileName()
+    let escape = this.escapeRegStr(disallows.join(''))
+
+    let reg = new RegExp('[' + escape + ']', 'g')
+    return str.replace(reg, replace)
+  }
 }
 
 Date.prototype.format = function (format) {

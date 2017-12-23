@@ -273,13 +273,10 @@ describe('Common', () => {
         isDetail: true
       }), ans, 'no get isHead')
     }
-
-    {
-      assert.deepEqual(Common.betweenStr(str, 'ert', 'gdd', {
-        isHead: true,
-        isDetail: true
-      }), null, 'no get isHead')
-    }
+    assert.deepEqual(Common.betweenStr(str, 'ert', 'gdd', {
+      isHead: true,
+      isDetail: true
+    }), null, 'no get isHead')
   })
 
   it('DateFormat', () => {
@@ -301,5 +298,16 @@ describe('Common', () => {
 
   it('escapeRegStr', () => {
     assert.equal(Common.escapeRegStr('[abc] ggs()da'), '\\[abc\\] ggs\\(\\)da')
+  })
+
+  it('replaceDisallowStringFileName', () => {
+    {
+      let r = Common.replaceDisallowStringFileName('<abc\\def:ghi*jkl?mno"pqr|stu>')
+      assert.equal(r, 'abcdefghijklmnopqrstu')
+    }
+    {
+      let r = Common.replaceDisallowStringFileName('<abc\\def:ghi*jkl?mno"pqr|stu>', '_')
+      assert.equal(r, '_abc_def_ghi_jkl_mno_pqr_stu_')
+    }
   })
 })

@@ -241,6 +241,22 @@ var Common = function () {
       return str.replace(reg, '\\$&');
     }
   }, {
+    key: 'disallowStringFileName',
+    value: function disallowStringFileName() {
+      return ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
+    }
+  }, {
+    key: 'replaceDisallowStringFileName',
+    value: function replaceDisallowStringFileName(str) {
+      var replace = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+
+      var disallows = this.disallowStringFileName();
+      var escape = this.escapeRegStr(disallows.join(''));
+
+      var reg = new RegExp('[' + escape + ']', 'g');
+      return str.replace(reg, replace);
+    }
+  }, {
     key: 'TYPE_STRING',
     get: function get() {
       return {
