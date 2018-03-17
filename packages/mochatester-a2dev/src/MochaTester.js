@@ -1,5 +1,4 @@
 import assert from 'assert'
-const = require('a2dev')
 
 const TYPE_STRING = {
   UNDEFINED: '[object Undefined]',
