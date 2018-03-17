@@ -8,7 +8,7 @@
  },
  "scripts": {
   "bootstrap": "npm i && lerna bootstrap && npm run build",
-  "test": "mocha ./packages/*/test",
+  "test": "mocha ./packages/*/test/*",
   "testOne": "mocha",
   "build": "node ./package_scripts/transformPackages.js",
   "dev": "npm run build -- -w",
