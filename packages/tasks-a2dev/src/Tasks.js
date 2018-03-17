@@ -1,4 +1,4 @@
-const Common = require('./Common').default
+const Common = require('common-a2dev')
 const fs = require('fs')
 
 class TaskStatusConfig {

@@ -1,5 +1,5 @@
 const assert = require('assert')
-const Tester = require('../dist/MochaTester').default
+const Tester = require('../index.js')
 
 describe('MochaTester', () => {
   it('testValues', () => {

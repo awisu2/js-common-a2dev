@@ -1,5 +1,13 @@
 {
-	"devDependencies": {
-		"lerna": "^2.9.0"
-	}
+ "devDependencies": {
+  "lerna": "^2.9.0",
+  "mocha": "^5.0.4"
+ },
+ "scripts": {
+  "bootstrap": "lerna bootstrap",
+  "test": "mocha test ./packages/*/test",
+  "testOne": "mocha test --grep",
+  "build": "babel src -d dist",
+  "dev": "npm run build -- -w"
+ }
 }

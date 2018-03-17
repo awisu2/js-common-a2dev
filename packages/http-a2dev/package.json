@@ -21,8 +21,7 @@
   "homepage": "https://github.com/awisu2/js-common-a2dev#readme",
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "mocha": "^4.0.1"
+    "babel-preset-env": "^1.6.1"
   },
   "dependencies": {
     "common-a2dev": "^0.0.34",

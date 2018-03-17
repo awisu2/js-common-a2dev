@@ -1,6 +1,6 @@
 const assert = require('assert')
-const Common = require('../dist/Common').default
-const Tester = require('../dist/MochaTester').default
+const Common = require('../index.js')
+const Tester = require('mochatester-a2dev')
 
 describe('Common', () => {
   it('copyObject', () => {

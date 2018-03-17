@@ -1,5 +1,5 @@
 const assert = require('assert')
-const {Tasks, Task, TaskStatus} = require('../dist/Tasks')
+const {Tasks, Task, TaskStatus} = require('../index.js')
 const fs = require('fs-extra')
 
 const TEXT = '[o]a\n[o]b\nc\nd\ne'

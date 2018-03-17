@@ -4,7 +4,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Common = require('./Common').default;
+var Common = require('common-a2dev');
 var fs = require('fs');
 
 var TaskStatusConfig = function () {
