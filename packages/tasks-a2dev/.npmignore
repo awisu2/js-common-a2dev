@@ -1,0 +1,6 @@
+# developfiles
+src/
+test/
+package_modules/
+.babelrc
+.eslintrc.js
