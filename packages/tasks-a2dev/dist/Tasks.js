@@ -200,6 +200,8 @@ var Task = function () {
   }, {
     key: 'statusInfoByStr',
     value: function statusInfoByStr(str, config) {
+      if (!config) config = new TaskConfig();
+
       // analyse status
       var match = Common.betweenStr(str, config.statusConfig.separator.before, config.statusConfig.separator.after, {
         isHead: true,

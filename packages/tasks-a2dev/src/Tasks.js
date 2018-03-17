@@ -102,6 +102,8 @@ class Task {
   }
 
   static statusInfoByStr (str, config) {
+    if (!config) config = new TaskConfig()
+
     // analyse status
     let match = Common.betweenStr(str,
       config.statusConfig.separator.before,
