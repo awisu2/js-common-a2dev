@@ -1,6 +1,6 @@
 {
   "name": "file-a2dev",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -13,9 +13,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "common-a2dev": "^0.1.1"
+    "common-a2dev": "^0.1.2"
   },
-  "private": true,
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.1",
