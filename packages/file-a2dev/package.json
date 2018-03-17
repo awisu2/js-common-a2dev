@@ -1,6 +1,6 @@
 {
   "name": "file-a2dev",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "common-a2dev": "^0.1.0"
+    "common-a2dev": "^0.1.1"
   },
   "private": true,
   "devDependencies": {
