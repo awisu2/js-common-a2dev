@@ -1,0 +1,30 @@
+{
+  "name": "http-a2dev",
+  "version": "0.1.2",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run build && mocha test",
+    "testOne": "mocha test --grep",
+    "build": "babel src -d dist",
+    "dev": "npm run build -- -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/awisu2/js-common-a2dev.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/awisu2/js-common-a2dev/issues"
+  },
+  "homepage": "https://github.com/awisu2/js-common-a2dev#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1"
+  },
+  "dependencies": {
+    "common-a2dev": "^0.1.2",
+    "request": "^2.85.0"
+  }
+}
