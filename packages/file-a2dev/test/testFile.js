@@ -2,6 +2,7 @@ const assert = require('assert')
 const File = require('../index.js')
 const fs = require('fs-extra')
 const path = require('path')
+const sep = path.sep
 
 const TEST_DIR = '.testDirectory'
 const FILES = {
@@ -76,15 +77,15 @@ describe('File', () => {
     let reads = File.deepReaddirSync(TEST_DIR)
     assert.deepEqual(reads, {
       files: [
-        '.testDirectory/b/e',
-        '.testDirectory/b/h._123',
-        '.testDirectory/f'
+        '.testDirectory' + sep + 'b' + sep + 'e',
+        '.testDirectory' + sep + 'b' + sep + 'h._123',
+        '.testDirectory' + sep + 'f'
       ],
       directories: [
-        '.testDirectory/a',
-        '.testDirectory/b',
-        '.testDirectory/b/c',
-        '.testDirectory/b/d'
+        '.testDirectory' + sep + 'a',
+        '.testDirectory' + sep + 'b',
+        '.testDirectory' + sep + 'b' + sep + 'c',
+        '.testDirectory' + sep + 'b' + sep + 'd'
       ]
     }, 'not correct get')
 
@@ -92,17 +93,17 @@ describe('File', () => {
     reads = File.deepReaddirSync(TEST_DIR, {ignoreSystemFile: false})
     assert.deepEqual(reads, {
       files: [
-        '.testDirectory/b/.DS_Store',
-        '.testDirectory/b/._g',
-        '.testDirectory/b/e',
-        '.testDirectory/b/h._123',
-        '.testDirectory/f'
+        '.testDirectory' + sep + 'b' + sep + '.DS_Store',
+        '.testDirectory' + sep + 'b' + sep + '._g',
+        '.testDirectory' + sep + 'b' + sep + 'e',
+        '.testDirectory' + sep + 'b' + sep + 'h._123',
+        '.testDirectory' + sep + 'f'
       ],
       directories: [
-        '.testDirectory/a',
-        '.testDirectory/b',
-        '.testDirectory/b/c',
-        '.testDirectory/b/d'
+        '.testDirectory' + sep + 'a',
+        '.testDirectory' + sep + 'b',
+        '.testDirectory' + sep + 'b' + sep + 'c',
+        '.testDirectory' + sep + 'b' + sep + 'd'
       ]
     }, 'not correct get with ignoreSystemFile')
 
@@ -110,15 +111,15 @@ describe('File', () => {
     reads = File.deepReaddirSync(TEST_DIR, {isRelative: true})
     assert.deepEqual(reads, {
       files: [
-        'b/e',
-        'b/h._123',
+        'b' + sep + 'e',
+        'b' + sep + 'h._123',
         'f'
       ],
       directories: [
         'a',
         'b',
-        'b/c',
-        'b/d'
+        'b' + sep + 'c',
+        'b' + sep + 'd'
       ]
     }, 'not correct get with isReative')
 
@@ -126,11 +127,11 @@ describe('File', () => {
     reads = File.deepReaddirSync(TEST_DIR, {maxDeep: 0})
     assert.deepEqual(reads, {
       files: [
-        '.testDirectory/f'
+        '.testDirectory' + sep + 'f'
       ],
       directories: [
-        '.testDirectory/a',
-        '.testDirectory/b'
+        '.testDirectory' + sep + 'a',
+        '.testDirectory' + sep + 'b'
       ]
     }, 'not correct get with isReative')
 
