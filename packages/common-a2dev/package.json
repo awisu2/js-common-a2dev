@@ -22,7 +22,5 @@
   "devDependencies": {
     "mochatester-a2dev": "^0.1.2"
   },
-  "dependencies": {
-    "request": "^2.83.0"
-  }
+  "dependencies": {}
 }

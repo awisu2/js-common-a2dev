@@ -21,7 +21,6 @@
   "homepage": "https://github.com/awisu2/js-common-a2dev#readme",
   "devDependencies": {},
   "dependencies": {
-    "common-a2dev": "^0.1.2",
-    "request": "^2.83.0"
+    "common-a2dev": "^0.1.2"
   }
 }
