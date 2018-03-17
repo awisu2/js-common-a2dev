@@ -24,6 +24,8 @@ npm test
 - build: `npm run build`
   - bable transform all package
   - **NOTE**: each package need `.babelrc`
+- dev: `npm run dev`
+  - watch file change and auto transform
 
 # test
 

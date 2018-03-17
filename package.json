@@ -11,6 +11,7 @@
   "test": "mocha ./packages/*/test",
   "testOne": "mocha",
   "build": "node ./package_scripts/transformPackages.js",
+  "dev": "npm run build -- -w",
   "clean": "git clean -d -f -x; git checkout ."
  },
  "dependencies": {}
