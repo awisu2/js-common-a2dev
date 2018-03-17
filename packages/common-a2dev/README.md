@@ -1,231 +1,290 @@
-# js-common-a2dev
+# common-a2dev
 
-for myself node library
+gather sometimes need.
 
-## Objects
-
-- Common
-- File
-- Http
-- MochaTester
-
-## Common
+# usage
 
 ```
-const {Common} = require('common-a2dev')
-```
+var common = require("common-a2dev")
 
-### Methods
-
-- Common.existsArg (v)
-- Common.canNumber (v)
-- Common.hasDataObject (object)
-- Common.valueObject (object, key, [def])
-- Common.copyObject (object)
-- Common.matchUrl (str, options)
-- Common.fillObject (obj, sample, options)
-- Common.pruneObject (obj, fills, options)
-- Common.getArgumentNode ()
-- Common.getArgumentCurrent ()
-- Common.getArgumentValue (index)
-- Common.addNodePathEnv (path)
-- Common.getMatches (values, pattern)
-- Common.getMaxLengthStr (strings)
-- Common.fillStr (str, length, fill = '0')
-- Common.randomInt(min, max)
-
-#### Common.existsArg (v)
-check exists function artument
-
-return `<boolean>`
-
-#### Common.canNumber (v)
-check value can convert number
-
-return `<boolean>`
-
-#### Common.hasDataObject (object)
-check one or more data in object
-
-return `<boolean>`
-
-#### Common.valueObject (object, key, [def])
-get value in object value. when no exists return def
-
-default `def` = `undefined`
-
-return `<value>`
-
-#### Common.copyObject (object)
-
-#### Common.matchUrl (str, options)
-- 文字列内に存在するurlを配列で返却します
-
-####  options
-- isDeleteEscape(boolean): url内のエスケープ文字を削除
-
-### Common.fillObject (obj, sample, options)
-
-sampleに存在するキーが、objに存在しない時、
-対象のキーに一致するsampleの値を、objに追加します
-
-- options
-  - isPrune(boolean): exec pruneObject after fill
-
-### Common.pruneObject (obj, fills, options)
-
-### Common.getArgumentNode ()
-
-### Common.getArgumentCurrent ()
-
-### Common.getArgumentValue (index)
-
-### Common.addNodePathEnv (path)
-
-## Http
-
-```
-const {Http} = require('common-a2dev')
-```
-
-### Http.request (url, data, options)
-
-- options
-  - method(string): Http Method(default: 'GET')
-  - isRedirect(boolean): is Redirect when 3xx statusCode(default: true)
-  - headers(object): send headers value(default: undefined)
-  - port(number): port (default: 80 or 443)
-
-
-## File
-
-### Methods
-
-- setSeparator
-- deepReaddirSync
-- makeFiles
-- checkFiles
-- renameSyncBySearch
-- fillNumbersByMaxlengthUnderDirectory (directory = '.')
-- downloadFile(url, filename)
-
-#### File.setSeparator(target)
-
-add directory separator suffix.  
-if already exists separator not add.
-
-#### File.deepReaddirSync (target, [options]) {
-read file and directory Recursive.  
-
-
-**arg:target** target directory
-
-**options**
-
-- maxDeep: how long can read directory recursive (default: 5)
-- deep: first directory deep number (default: 0)
-
-**return** `<object>`
-
-```
-{
-  filse: <array>,
-  directories: <array>
+let v = []
+if (common.isArray(v)) {
+  console.log("it's array")
+} else {
+  console.log("it's not array")
 }
 ```
 
-#### File.makeFiles (filse, current = '.')
+# methods
 
-make directories and files.
+##  existsArg
 
-**notice**
+check args isExists
 
-please remove folders before execute this function.  
-this function not check file or directory and remove.
-
-**arg:filse** `<object>`
-
-create file or directory key base.  
-if value is object create directory.  
-if value is not object create file and write value in file.  
-
-exsample
-
+```js
+common.existsArg(undefined) // false
+common.existsArg(1) // true
+common.existsArg(null) // true
 ```
-const files = {
-  anydir: {
-    a: {},
-    b: {
-      c: {},
-      d: {},
-      e: 'foo'
-    },
-    f: 'bar'
-  }
+
+## canNumber
+
+check value it's can change number
+
+```js
+common.canNumber (1) // true
+common.canNumber ("1") // true
+common.canNumber ("a") // false
+common.canNumber ("1a") // false
+```
+
+## hasDataObject
+
+check value it's false or when value is object not have data
+
+```js
+common.hasDataObject ({}) // false
+common.hasDataObject ([]) // false
+common.hasDataObject ([0]) // true
+common.hasDataObject () // false
+common.hasDataObject (0) // false
+```
+
+## valueObject
+
+get value from object
+
+```js
+common.valueObject ({a: 1}, "a", 2) // 1
+common.valueObject ({a: 1}, "b", 2) // 2
+```
+
+## copyObject
+
+value copy object
+
+```js
+var obj1 = {a: 1}
+var obj2 = common.copyObject (obj1) // 1
+obj2.a = 2
+
+console.log(obj1) // {a: 1}
+console.log(obj2) // {a: 2}
+```
+
+## matchUrl
+
+get urls by string
+
+```js
+common.matchUrl ("http://exsample.com is url. second url is http://exsample2.com") // ["http://exsample.com", "http://exsample2.com"]
+```
+
+### options
+
+- isDeleteEscape: boolean
+  - if it's true. delete escape string.
+
+## fillObject
+
+fill data by sample
+
+```js
+var obj = {a: 1}
+var options = {
+  isPrune: false
 }
-File.makeFiles(filse)
+var obj2 = common.fillObject (obj, {b: 2}, options) // {a: 1, b: 2}
 ```
 
-this sample create directory and file below.
+### options
 
-```
-anydir/
-  a/
-  b/
-    c/
-    d/
-    e (this is file and have data 'foo')
-  f (this is file and have data 'bar')
-```
+- isPrune: boolean
+  - if it's true. run prneOjbect after fillObject
 
-#### File.checkFiles (files, [current])
+## pruneObject
 
-check exists files and directories.  
-check file's data is same.
+prune data from obj not exists sample value
 
-**arg:files**
-same setting by `File.makeFiles -> files`
-
-but it have few difference.  
-if value is null not check file's data
-
-**arg:current** check directory (default: .)
-
-**return** `<array>` or `null`
-
-if found out no exists or different data. return array.  
-if all correctly return null
-
-**exsample**
-
-```
-const files = {
-  anydir: {
-    a: {},
-    b: {
-      c: {},
-      d: {},
-      e: 'foo'
-    },
-    f: 'bar'
-  }
+```js
+var obj = {a: 1, b: 2}
+var options = {
+  isPrune: false
 }
-File.checkFiles(filse)
+var obj2 = common.pruneObject (obj, {b: 2}, options) // {b: 2}
 ```
 
-#### File.renameSyncBySearch (file, pattern, replace)
+## randomInt
 
-rename file by fs.renameSync  
-before rename check pattern 
+get randomInt
 
+```js
+common.randomInt(1, 5) // 1-5
 ```
 
+## typeString
+
+get value type from class
+
+```js
+common.typeString(1) // '[object Number]'
+common.typeString("1") // '[object String]'
+common.typeString([]) // '[object Array]'
+common.typeString({}) // '[object Object]'
 ```
 
-## How to Test
+## isObject
+
+check value is object corectly
+
+```js
+common.isObject(1) // false
+common.isObject("1") // false
+common.isObject(null) // false
+common.isObject([]) // false
+common.isObject({}) // true
+```
+
+## isArray
+
+check value is object corectly
+
+```js
+common.isArray(1) // false
+common.isArray("1") // false
+common.isArray(null) // false
+common.isArray([]) // true
+common.isArray({}) // false
+```
+
+## isObjectArray
+
+check value is object or array. if it's null return is false.
+
+```js
+common.isObjectArray(1) // false
+common.isObjectArray("1") // false
+common.isObjectArray(null) // false
+common.isObjectArray([]) // true
+common.isObjectArray({}) // true
+```
+
+## getArgumentNode
+
+get node binary path currentry run.
+
+```js
+common.getArgumentNode() // '/usr/local/Cellar/node/8.1.2/bin/node'
+```
+
+**NOTE**: please use only when cli.
+
+## getArgumentCurrent
+
+get node script path currentry run.
+
+```js
+common.getArgumentCurrent() // '/path/to/current/${script.js}'
+```
+
+**NOTE**: please use only when cli.
+
+## getArgumentValue
+
+get value from argument.
 
 ```bash
-npm test
-# grep
-npm test -- --grep Common
+node sample.js 1 2 3
 ```
+
+```js
+common.getArgumentValue(0) // 1
+common.getArgumentValue(2) // 3
+```
+
+## addNodePathEnv
+
+add node path. for Environment
+
+```js
+common.addNodePathEnv("/path/to/node") // NODE_PATH: "${NODE_PATH};/path/to/node"
+```
+
+## getMatches
+
+get match string from multi string by pattern.
+
+```js
+common.getMatches(["abcdefgabcxyz", "hijxyz"], /cd/) // [ 'cd' ]
+common.getMatches(["abcdefgabcxyz", "hijxyz"], /xy/) // [ 'xy', 'xy' ]
+common.getMatches(["abcdefgabcxyz", "hijxyz"], /[a-z]{2}/) // [ 'ab', 'hi' ]
+common.getMatches(["abcdefgabcxyz", "hijxyz"], /[a-z]{2}/g) // [ 'ab', 'cd', 'ef', 'ga', 'bc', 'xy', 'hi', 'jx', 'yz' ]
+```
+
+## getMaxLengthStr
+
+get max length from strings
+
+```js
+common.getMaxLengthStr(["1", "333", "22"]) // 3
+```
+
+## fillStr (str, length, fill = '0')
+
+fill string fill
+
+```js
+common.fillStr(123, 6) // '00123'
+common.fillStr(123, 2) // '23'
+common.fillStr(123, 6, "ZY") // 'ZYZ123'
+common.fillStr("abc", 7, "ZY") // 'ZYZYabc'
+```
+
+**NOTE**: when fill's value is multi. stacking from the front.
+
+## betweenStr (str, prefix, suffix, options = {})
+
+get string btween prefix and suffix
+
+```js
+common.betweenStr("abcdefghijklmn", "cd", "kl") // 'efghij'
+common.betweenStr("abcdefghijklmn", "ZZ", "ZZ") // ''
+common.betweenStr("abcdefghijklmn", "cd", "kl", {isDetail: true}) // [ 'cdefghijkl', 'efghij', index: 2, input: 'abcdefghijklmn' ]
+```
+
+### options
+
+- isDetail: boolean
+  - if it's true. return match object.
+
+
+## escapeRegStr (str)
+
+escape string for regExp
+
+## disallowStringFileName ()
+
+get disallow strings for filename.
+
+```js
+common.disallowStringFileName () // [ '\\', '/', ':', '*', '?', '"', '<', '>', '|' ]
+```
+
+## replaceDisallowStringFileName (str, replace = '')
+
+replace disallow string from string for filename of filesystem.
+
+```js
+common.disallowStringFileName () // [ '\\', '/', ':', '*', '?', '"', '<', '>', '|' ]
+```
+
+
+## Date.format
+
+```js
+var d = new Date
+d.format('YYYY-MM-DDTHH:mm:SS') // '2018-03-17T13:54:38'
+```
+
+**NOTE**: automaticaly set prototype
+
