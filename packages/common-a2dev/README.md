@@ -4,7 +4,7 @@ gather sometimes need.
 
 # usage
 
-```
+```js
 var common = require("common-a2dev")
 
 let v = []
