@@ -8,8 +8,8 @@
  },
  "scripts": {
   "bootstrap": "npm i && lerna bootstrap && npm run build",
-  "test": "mocha test ./packages/*/test",
-  "testOne": "mocha test --grep",
+  "test": "mocha ./packages/*/test",
+  "testOne": "mocha",
   "build": "node ./package_scripts/transformPackages.js",
   "clean": "git clean -d -f -x; git checkout ."
  },
