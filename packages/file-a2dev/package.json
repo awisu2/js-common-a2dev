@@ -15,7 +15,5 @@
   "dependencies": {
     "common-a2dev": "^0.1.2"
   },
-  "devDependencies": {
-    "fs-extra": "^5.0.0"
-  }
+  "devDependencies": {}
 }

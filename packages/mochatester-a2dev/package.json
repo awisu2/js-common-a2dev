@@ -19,9 +19,7 @@
     "url": "https://github.com/awisu2/js-common-a2dev/issues"
   },
   "homepage": "https://github.com/awisu2/js-common-a2dev#readme",
-  "devDependencies": {
-    "fs-extra": "^4.0.2"
-  },
+  "devDependencies": {},
   "dependencies": {
     "common-a2dev": "^0.1.2",
     "request": "^2.83.0"
