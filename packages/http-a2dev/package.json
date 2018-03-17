@@ -1,6 +1,6 @@
 {
   "name": "http-a2dev",
-  "version": "0.0.34",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -24,7 +24,7 @@
     "babel-preset-env": "^1.6.1"
   },
   "dependencies": {
-    "common-a2dev": "^0.0.34",
+    "common-a2dev": "^0.1.0",
     "request": "^2.85.0"
   },
   "private": true
