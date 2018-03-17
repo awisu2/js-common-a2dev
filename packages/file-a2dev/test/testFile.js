@@ -1,6 +1,5 @@
 const assert = require('assert')
-const File = require('../dist/File.js').default
-// const Tester = require('../dist/MochaTester').default
+const File = require('../index.js')
 const fs = require('fs-extra')
 const path = require('path')
 

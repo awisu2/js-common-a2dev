@@ -1,5 +1,5 @@
 const assert = require('assert')
-const Log = require('../dist/Log').default
+const Log = require('../index.js')
 const File = require('file-a2dev')
 const fs = require('fs-extra')
 const path = require('path')

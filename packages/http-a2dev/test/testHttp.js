@@ -1,4 +1,4 @@
-const Http = require('../dist/Http.js').default
+const Http = require('../index.js')
 
 const URL = 'http://www.google.co.jp/'
 
