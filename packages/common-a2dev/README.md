@@ -17,7 +17,7 @@ if (common.isArray(v)) {
 
 # methods
 
-##  existsArg
+##  existsArg (v)
 
 check args isExists
 
@@ -27,7 +27,7 @@ common.existsArg(1) // true
 common.existsArg(null) // true
 ```
 
-## canNumber
+## canNumber (v)
 
 check value it's can change number
 
@@ -38,7 +38,7 @@ common.canNumber ("a") // false
 common.canNumber ("1a") // false
 ```
 
-## hasDataObject
+## hasDataObject (v)
 
 check value it's false or when value is object not have data
 
@@ -50,7 +50,7 @@ common.hasDataObject () // false
 common.hasDataObject (0) // false
 ```
 
-## valueObject
+## valueObject (object, key, def)
 
 get value from object
 
@@ -59,7 +59,7 @@ common.valueObject ({a: 1}, "a", 2) // 1
 common.valueObject ({a: 1}, "b", 2) // 2
 ```
 
-## copyObject
+## copyObject (object)
 
 value copy object
 
@@ -72,7 +72,7 @@ console.log(obj1) // {a: 1}
 console.log(obj2) // {a: 2}
 ```
 
-## matchUrl
+## matchUrl (str, options = {})
 
 get urls by string
 
@@ -85,7 +85,7 @@ common.matchUrl ("http://exsample.com is url. second url is http://exsample2.com
 - isDeleteEscape: boolean
   - if it's true. delete escape string.
 
-## fillObject
+## fillObject (obj, sample, options = {})
 
 fill data by sample
 
@@ -102,7 +102,7 @@ var obj2 = common.fillObject (obj, {b: 2}, options) // {a: 1, b: 2}
 - isPrune: boolean
   - if it's true. run prneOjbect after fillObject
 
-## pruneObject
+## pruneObject (obj, sample, options = {})
 
 prune data from obj not exists sample value
 
@@ -114,7 +114,7 @@ var options = {
 var obj2 = common.pruneObject (obj, {b: 2}, options) // {b: 2}
 ```
 
-## randomInt
+## randomInt (min, max)
 
 get randomInt
 
@@ -122,7 +122,7 @@ get randomInt
 common.randomInt(1, 5) // 1-5
 ```
 
-## typeString
+## typeString (v)
 
 get value type from class
 
@@ -133,7 +133,7 @@ common.typeString([]) // '[object Array]'
 common.typeString({}) // '[object Object]'
 ```
 
-## isObject
+## isObject (v)
 
 check value is object corectly
 
@@ -145,7 +145,7 @@ common.isObject([]) // false
 common.isObject({}) // true
 ```
 
-## isArray
+## isArray (v)
 
 check value is object corectly
 
@@ -157,7 +157,7 @@ common.isArray([]) // true
 common.isArray({}) // false
 ```
 
-## isObjectArray
+## isObjectArray (v)
 
 check value is object or array. if it's null return is false.
 
@@ -169,7 +169,7 @@ common.isObjectArray([]) // true
 common.isObjectArray({}) // true
 ```
 
-## getArgumentNode
+## getArgumentNode ()
 
 get node binary path currentry run.
 
@@ -179,7 +179,7 @@ common.getArgumentNode() // '/usr/local/Cellar/node/8.1.2/bin/node'
 
 **NOTE**: please use only when cli.
 
-## getArgumentCurrent
+## getArgumentCurrent ()
 
 get node script path currentry run.
 
@@ -189,7 +189,7 @@ common.getArgumentCurrent() // '/path/to/current/${script.js}'
 
 **NOTE**: please use only when cli.
 
-## getArgumentValue
+## getArgumentValue (index)
 
 get value from argument.
 
@@ -202,7 +202,7 @@ common.getArgumentValue(0) // 1
 common.getArgumentValue(2) // 3
 ```
 
-## addNodePathEnv
+## addNodePathEnv (path)
 
 add node path. for Environment
 
@@ -210,7 +210,7 @@ add node path. for Environment
 common.addNodePathEnv("/path/to/node") // NODE_PATH: "${NODE_PATH};/path/to/node"
 ```
 
-## getMatches
+## getMatches (values, pattern)
 
 get match string from multi string by pattern.
 
@@ -221,7 +221,7 @@ common.getMatches(["abcdefgabcxyz", "hijxyz"], /[a-z]{2}/) // [ 'ab', 'hi' ]
 common.getMatches(["abcdefgabcxyz", "hijxyz"], /[a-z]{2}/g) // [ 'ab', 'cd', 'ef', 'ga', 'bc', 'xy', 'hi', 'jx', 'yz' ]
 ```
 
-## getMaxLengthStr
+## getMaxLengthStr (strings)
 
 get max length from strings
 
