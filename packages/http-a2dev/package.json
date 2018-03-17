@@ -19,10 +19,7 @@
     "url": "https://github.com/awisu2/js-common-a2dev/issues"
   },
   "homepage": "https://github.com/awisu2/js-common-a2dev#readme",
-  "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.1"
-  },
+  "devDependencies": {},
   "dependencies": {
     "common-a2dev": "^0.1.2",
     "request": "^2.85.0"

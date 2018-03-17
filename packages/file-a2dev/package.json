@@ -15,9 +15,5 @@
   "dependencies": {
     "common-a2dev": "^0.1.2"
   },
-  "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "fs-extra": "^5.0.0"
-  }
+  "devDependencies": {}
 }
