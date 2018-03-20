@@ -5,6 +5,23 @@
 ```js
 var tester = require("mochatester-a2dev")
 var values = tester.testValues() // a lot values for test
+// { undefined:
+//    { value: undefined,
+//      type: 'undefined',
+//      typeString: '[object Undefined]',
+//      canNumber: false },
+//   undefinedArg:
+//    { value: undefined,
+//      type: 'undefined',
+//      typeString: '[object Undefined]',
+//      canNumber: false },
+//   null:
+//    { value: null,
+//      type: 'object',
+//      typeString: '[object Null]',
+//      canNumber: false }
+// ...
+// }
 ```
 
 # methods
