@@ -4,7 +4,7 @@
 
 ```js
 var tester = require("mochatester-a2dev")
-tester.testValues()
+var values = tester.testValues() // a lot values for test
 ```
 
 # methods
