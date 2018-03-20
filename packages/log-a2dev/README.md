@@ -7,8 +7,8 @@ logging to file.
 this sample save to log.txt. 2 line a and b.
 
 ```js
-let Log = require("log-a2dev")
-new log = new Log("/path/to/log.txt")
+var Log = require("log-a2dev")
+var log = new Log("/path/to/log.txt")
 log.append('a')
 log.append('b')
 ```
