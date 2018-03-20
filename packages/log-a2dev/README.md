@@ -15,7 +15,7 @@ log.append('b')
 
 # methods
 
-## append (log, d = null)
+## append (log, d = null, options = {})
 
 d: Date  
 when it's set logging time change.
