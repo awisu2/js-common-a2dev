@@ -5,10 +5,24 @@ import common from 'common-a2dev'
 import request from 'request'
 import fs from 'fs'
 
+const METHOD = {
+  'GET': 'GET',
+  'POST': 'POST',
+  'DELETE': 'DELETE',
+  'OPTION': 'POST',
+  'PUT': 'PUT',
+  'PATCH': 'PATCH',
+  'LINK': 'LINK',
+  'UNLINK': 'UNLINK',
+  'TRACE': 'TRACE'
+}
+
 export default class Http {
+  static get METHOD () { return METHOD }
+
   static request (url, data = null, options = {}) {
     options = common.fillObject(options, {
-      method: 'GET',
+      method: METHOD.GET,
       isRedirect: true
     })
 
@@ -19,7 +33,7 @@ export default class Http {
       // send data
       let path = urlParse.path
       let sendData = ''
-      if (options.method === 'GET') {
+      if (options.method === METHOD.GET) {
         path = this.createPathForGet(path, data)
       } else {
         sendData = data ? JSON.stringify(data) : ''
@@ -79,6 +93,26 @@ export default class Http {
       if (sendData) request.write(sendData)
       request.end()
     })
+  }
+
+  static get (url, data = null, options = {}) {
+    options.method = METHOD.GET
+    return this.request (url, data, options)
+  }
+
+  static post (url, data = null, options = {}) {
+    options.method = METHOD.POST
+    return this.request (url, data, options)
+  }
+
+  static put (url, data = null, options = {}) {
+    options.method = METHOD.PUT
+    return this.request (url, data, options)
+  }
+
+  static delete (url, data = null, options = {}) {
+    options.method = METHOD.DELETE
+    return this.request (url, data, options)
   }
 
   static createPathForGet (path, data) {
