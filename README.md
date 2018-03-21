@@ -15,6 +15,7 @@ npm test
 - [log-a2dev](./packages/log-a2dev)
 - [mochatester-a2dev](./packages/mochatester-a2dev)
 - [tasks-a2dev](./packages/tasks-a2dev)
+- [slack-a2dev](./packages/slack-a2dev)
 
 # npm scripts
 
