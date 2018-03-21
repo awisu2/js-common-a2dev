@@ -1,6 +1,6 @@
 {
   "name": "http-a2dev",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -19,9 +19,8 @@
     "url": "https://github.com/awisu2/js-common-a2dev/issues"
   },
   "homepage": "https://github.com/awisu2/js-common-a2dev#readme",
-  "devDependencies": {},
   "dependencies": {
-    "common-a2dev": "^0.1.2",
+    "common-a2dev": "^0.1.3",
     "request": "^2.85.0"
   }
 }

@@ -13,6 +13,27 @@ http.request('https://www.google.co.jp/')
   })
 ```
 
+# parameters
+
+## METHOD
+
+return list of HTTP METHOD
+
+```js
+http.METHOD.GET // GET
+// {
+//   'GET': 'GET',
+//   'POST': 'POST',
+//   'DELETE': 'DELETE',
+//   'OPTION': 'POST',
+//   'PUT': 'PUT',
+//   'PATCH': 'PATCH',
+//   'LINK': 'LINK',
+//   'UNLINK': 'UNLINK',
+//   'TRACE': 'TRACE'
+// }
+```
+
 # methods
 
 ## request (url, data = null, options = {}) : promise
@@ -32,13 +53,29 @@ http.request('https://www.google.co.jp/')
 ### options
 
 - method: string(default: GET)
-  - GET, POST, OPTION, DELETE
+  - GET, POST, OPTION, DELETE (please use http.METHOD)
 - isRedirect: boolean(default: true)
   - if it's true. auto redirect.
 - headers: object (default: {})
   - set http headers
 - port: number(default: 80)
   - http port. if it's not set automaticaly set. http => 80, https => 443
+
+## get (url, data = null, options = {}) : promise
+
+call request with `options.method = http.METHOD.GET`. please show detail request method
+
+## post (url, data = null, options = {}) : promise
+
+call request with `options.method = http.METHOD.POST`. please show detail request method
+
+## put (url, data = null, options = {}) : promise
+
+call request with `options.method = http.METHOD.PUT`. please show detail request method
+
+## delete (url, data = null, options = {}) : promise
+
+call request with `options.method = http.METHOD.DELETE`. please show detail request method
 
 ## createPathForGet (path, data)
 
