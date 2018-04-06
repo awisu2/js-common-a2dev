@@ -9,8 +9,31 @@ But I want use same config file on node and javascript.
 - if it's can get data from environment
 - simple over write
 
-requirement
+usage
 ===========
 
-1. default is default setting.
-2. return class for use
+```javascript
+var Config = require("config-a2dev")
+
+const myConfig = {
+  default: {
+    a: 1,
+    b: {
+      b1: 2,
+      b2: 3
+    }
+  },
+  dev: {
+    a: 11, // over write
+    b: {
+      b1: 12,
+      b3: 14// add
+    },
+    c: 13
+  }
+}
+
+var config = Config.create(myConfig, {stage: 'dev'})
+// { a: 1, b: { b1: 2, b2: 3, b3: 14 }, c: 13 }
+```
+
