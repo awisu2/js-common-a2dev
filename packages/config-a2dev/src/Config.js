@@ -16,11 +16,37 @@ export default class Config {
   // This function get value of Environment, if it can.
   static getEnv (key, def = null) {
     if (!Config.isEnv) return def
-    return process.env[key]
+    return process.env[key] || def
   }
 
   static isExistsObject (v) {
     return typeof v === 'object' && v !== null
+  }
+
+  static overwriteObject (target, source) {
+    let obj = {}
+
+    let sourceKeys = Object.keys(source)
+    for (let i in target) {
+      let index = sourceKeys.indexOf(i)
+      if (index !== -1) {
+        if (common.typeString(target[i]) === common.typeString(source[i]) &&
+            common.isObjectArray(target[i])) {
+            obj[i] = Config.overwriteObject(target[i], source[i])
+        } else {
+          obj[i] = source[i]
+        }
+        delete sourceKeys.splice(index,1)
+      } else {
+        obj[i] = target[i]
+      }
+    }
+
+    for (let i in sourceKeys) {
+      obj[sourceKeys[i]] = source[sourceKeys[i]]
+    }
+
+    return obj
   }
 
   static create (config, options = {}) {
@@ -36,7 +62,8 @@ export default class Config {
     if (!options.stage || !Config.isExistsObject(config[options.stage])) return _config
 
     // over write specific configulation
-    _config = common.fillObject(_config, config[options.stage])
+    _config = Config.overwriteObject(_config, config[options.stage])
+
     return _config
   }
 

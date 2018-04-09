@@ -26,7 +26,7 @@ const myConfig = {
   dev: {
     a: 11, // over write
     b: {
-      b1: 12,
+      b1: Config.getEnv('b1', 12), // get from environment
       b3: 14// add
     },
     c: 13
@@ -34,6 +34,6 @@ const myConfig = {
 }
 
 var config = Config.create(myConfig, {stage: 'dev'})
-// { a: 1, b: { b1: 2, b2: 3, b3: 14 }, c: 13 }
+// { a: 1, b: { b1: 12, b2: 3, b3: 14 }, c: 13 }
 ```
 

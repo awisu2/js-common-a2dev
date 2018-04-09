@@ -58,6 +58,7 @@ export default class Common {
     return found
   }
 
+  // fill object, it's Typically use add default parameter for args.
   static fillObject (obj, sample, options = {}) {
     let _obj = obj ? this.copyObject(obj) : {}
     for (let key in sample) {

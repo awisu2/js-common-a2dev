@@ -87,7 +87,8 @@ common.matchUrl ("http://exsample.com is url. second url is http://exsample2.com
 
 ## fillObject (obj, sample, options = {})
 
-fill data by sample
+fill data by sample.  
+it's Typically use add default parameter for args.
 
 ```js
 var obj = {a: 1}
